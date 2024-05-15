@@ -504,23 +504,19 @@ uint8_t chassis_powerloop(Chassis_t *Chassis) {
     Power_Max += 50;
   }
   if (power_flag == 0) {
-    else * / if (power_heat_data_t.buffer_energy < 35 && power_heat_data_t.buffer_energy >= 30) {
+    if (power_heat_data_t.buffer_energy < 35 && power_heat_data_t.buffer_energy >= 30) {
       Plimit = 0.6;
       // power_scale = (Power_Max-2) / lijupower;
-    }
-    else if (power_heat_data_t.buffer_energy < 30 && power_heat_data_t.buffer_energy >= 20) {
+    } else if (power_heat_data_t.buffer_energy < 30 && power_heat_data_t.buffer_energy >= 20) {
       Plimit = 0.3;
       // power_scale = (Power_Max-2) / lijupower;
-    }
-    else if (power_heat_data_t.buffer_energy < 20 && power_heat_data_t.buffer_energy >= 10 && cms_flag == 0) {
+    } else if (power_heat_data_t.buffer_energy < 20 && power_heat_data_t.buffer_energy >= 10 && cms_flag == 0) {
       Plimit = 0.1;
       // power_scale = (Power_Max-2) / lijupower;
-    }
-    else if (power_heat_data_t.buffer_energy < 10 && power_heat_data_t.buffer_energy >= 0) {
+    } else if (power_heat_data_t.buffer_energy < 10 && power_heat_data_t.buffer_energy >= 0) {
       Plimit = 0.05;
       // power_scale = (Power_Max-2) / lijupower;}
-    }
-    else {
+    } else {
       Plimit = 1;
       // power_scale = 1;
     }
