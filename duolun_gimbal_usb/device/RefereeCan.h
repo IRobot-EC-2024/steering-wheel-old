@@ -4,16 +4,15 @@
 #include "struct_typedef.h"
 #include "CanPacket.h"
 
-typedef struct
-{
-    RefereeChassisPowerShootHeat_t      Realtime;
-    fp32                                Ammo0Speed;//Ç¹¿ÚµÄÉäËÙ
-    fp32                                Ammo1Speed;
-    fp32                                Ammo2Speed;
-    RefereeAmmoLimit_t                  Ammo0Limit;
-    RefereeAmmoLimit_t                  Ammo1Limit;//Ç¹¿ÚµÄÏÞÖÆ
-    RefereeAmmoLimit_t                  Ammo2Limit;
-    RefereeSelfState_t                  RobotState;
+typedef struct {
+  RefereeChassisPowerShootHeat_t Realtime;
+  fp32 Ammo0Speed;  // Ç¹ï¿½Úµï¿½ï¿½ï¿½ï¿½ï¿½
+  fp32 Ammo1Speed;
+  fp32 Ammo2Speed;
+  RefereeAmmoLimit_t Ammo0Limit;
+  RefereeAmmoLimit_t Ammo1Limit;  // Ç¹ï¿½Úµï¿½ï¿½ï¿½ï¿½ï¿½
+  RefereeAmmoLimit_t Ammo2Limit;
+  RefereeSelfState_t RobotState;
 } RefereeInformation_t;
 
 extern void RefereePowerHeatNode0InformationUpdate(uint8_t *data);

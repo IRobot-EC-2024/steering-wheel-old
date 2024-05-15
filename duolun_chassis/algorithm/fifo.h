@@ -2,8 +2,7 @@
 #ifndef __FIFO_H__
 #define __FIFO_H__
 #ifdef __cplusplus
-"C"
-{
+"C" {
 #endif
 
 #include <stdio.h>
@@ -16,7 +15,7 @@
   //******************************************************************************************
 
 #define NDEBUG
-#define USE_DYNAMIC_MEMORY //!< Use system malloc/free function
+#define USE_DYNAMIC_MEMORY  //!< Use system malloc/free function
 
 #include "stm32f4xx_hal.h"
 
@@ -35,26 +34,24 @@
   //******************************************************************************************
 
   //! FIFO Memory Model (Single Byte Mode)
-  typedef struct
-  {
-    char *p_start_addr; //!< FIFO Memory Pool Start Address
-    char *p_end_addr;   //!< FIFO Memory Pool End Address
-    int free_num;       //!< The remain capacity of FIFO
-    int used_num;       //!< The number of elements in FIFO
-    char *p_read_addr;  //!< FIFO Data Read Index Pointer
-    char *p_write_addr; //!< FIFO Data Write Index Pointer
+  typedef struct {
+    char *p_start_addr;  //!< FIFO Memory Pool Start Address
+    char *p_end_addr;    //!< FIFO Memory Pool End Address
+    int free_num;        //!< The remain capacity of FIFO
+    int used_num;        //!< The number of elements in FIFO
+    char *p_read_addr;   //!< FIFO Data Read Index Pointer
+    char *p_write_addr;  //!< FIFO Data Write Index Pointer
   } fifo_s_t;
 
   //! FIFO Memory Model
-  typedef struct
-  {
-    char *p_start_addr; //!< FIFO Memory Pool Start Address
-    char *p_end_addr;   //!< FIFO Memory Pool End Address
-    int free_num;       //!< The remain capacity of FIFO
-    int used_num;       //!< The number of elements in FIFO
-    int unit_size;      //!< FIFO Element Size(Unit: Byte)
-    char *p_read_addr;  //!< FIFO Data Read Index Pointer
-    char *p_write_addr; //!< FIFO Data Write Index Pointer
+  typedef struct {
+    char *p_start_addr;  //!< FIFO Memory Pool Start Address
+    char *p_end_addr;    //!< FIFO Memory Pool End Address
+    int free_num;        //!< The remain capacity of FIFO
+    int used_num;        //!< The number of elements in FIFO
+    int unit_size;       //!< FIFO Element Size(Unit: Byte)
+    char *p_read_addr;   //!< FIFO Data Read Index Pointer
+    char *p_write_addr;  //!< FIFO Data Write Index Pointer
   } fifo_t;
 
   //******************************************************************************************
@@ -93,7 +90,7 @@
   //******************************************************************************************
   void fifo_s_destroy(fifo_s_t * p_fifo);
 
-#endif // USE_DYNAMIC_MEMORY
+#endif  // USE_DYNAMIC_MEMORY
 
   //******************************************************************************************
   //
@@ -349,4 +346,4 @@
 }
 #endif
 
-#endif // __FIFO_H__
+#endif  // __FIFO_H__

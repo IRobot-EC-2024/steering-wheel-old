@@ -7,292 +7,291 @@
 #include "CanPacket.h"
 #define SEND_BUS hcan1
 
-
 #define SIZE 517
 #define HEADER_SOF 0xA5
-#define REF_PROTOCOL_FRAME_MAX_SIZE         128
+#define REF_PROTOCOL_FRAME_MAX_SIZE 128
 
-#define REF_PROTOCOL_HEADER_SIZE            sizeof(frame_header_struct_t)
-#define REF_PROTOCOL_CMD_SIZE               2
-#define REF_PROTOCOL_CRC16_SIZE             2
-#define REF_HEADER_CRC_LEN                  (REF_PROTOCOL_HEADER_SIZE + REF_PROTOCOL_CRC16_SIZE)
-#define REF_HEADER_CRC_CMDID_LEN            (REF_PROTOCOL_HEADER_SIZE + REF_PROTOCOL_CRC16_SIZE + sizeof(uint16_t))
-#define REF_HEADER_CMDID_LEN                (REF_PROTOCOL_HEADER_SIZE + sizeof(uint16_t))
+#define REF_PROTOCOL_HEADER_SIZE sizeof(frame_header_struct_t)
+#define REF_PROTOCOL_CMD_SIZE 2
+#define REF_PROTOCOL_CRC16_SIZE 2
+#define REF_HEADER_CRC_LEN (REF_PROTOCOL_HEADER_SIZE + REF_PROTOCOL_CRC16_SIZE)
+#define REF_HEADER_CRC_CMDID_LEN (REF_PROTOCOL_HEADER_SIZE + REF_PROTOCOL_CRC16_SIZE + sizeof(uint16_t))
+#define REF_HEADER_CMDID_LEN (REF_PROTOCOL_HEADER_SIZE + sizeof(uint16_t))
 
 #pragma pack(push, 1)
 
-typedef struct
-{
-    uint8_t arr[SIZE];
-    uint32_t front;
-    int32_t rear;
-    uint32_t counter;
+typedef struct {
+  uint8_t arr[SIZE];
+  uint32_t front;
+  int32_t rear;
+  uint32_t counter;
 
-}Queue_t;
+} Queue_t;
 
-typedef enum
-{
-    RED_HERO        = 1,
-    RED_ENGINEER    = 2,
-    RED_STANDARD_1  = 3,
-    RED_STANDARD_2  = 4,
-    RED_STANDARD_3  = 5,
-    RED_AERIAL      = 6,
-    RED_SENTRY      = 7,
-    BLUE_HERO       = 11,
-    BLUE_ENGINEER   = 12,
-    BLUE_STANDARD_1 = 13,
-    BLUE_STANDARD_2 = 14,
-    BLUE_STANDARD_3 = 15,
-    BLUE_AERIAL     = 16,
-    BLUE_SENTRY     = 17,
+typedef enum {
+  RED_HERO = 1,
+  RED_ENGINEER = 2,
+  RED_STANDARD_1 = 3,
+  RED_STANDARD_2 = 4,
+  RED_STANDARD_3 = 5,
+  RED_AERIAL = 6,
+  RED_SENTRY = 7,
+  BLUE_HERO = 11,
+  BLUE_ENGINEER = 12,
+  BLUE_STANDARD_1 = 13,
+  BLUE_STANDARD_2 = 14,
+  BLUE_STANDARD_3 = 15,
+  BLUE_AERIAL = 16,
+  BLUE_SENTRY = 17,
 } robot_id_t;
-typedef enum
-{
-    PROGRESS_UNSTART        = 0,
-    PROGRESS_PREPARE        = 1,
-    PROGRESS_SELFCHECK      = 2,
-    PROGRESS_5sCOUNTDOWN    = 3,
-    PROGRESS_BATTLE         = 4,
-    PROGRESS_CALCULATING    = 5,
+typedef enum {
+  PROGRESS_UNSTART = 0,
+  PROGRESS_PREPARE = 1,
+  PROGRESS_SELFCHECK = 2,
+  PROGRESS_5sCOUNTDOWN = 3,
+  PROGRESS_BATTLE = 4,
+  PROGRESS_CALCULATING = 5,
 } game_progress_t;
-typedef __PACKED_STRUCT //0001
+typedef __PACKED_STRUCT  // 0001
 {
-    uint8_t game_type : 4;
-    uint8_t game_progress : 4;
-    uint16_t stage_remain_time;
-	
-		uint64_t SyncTimeStamp;
-} ext_game_state_t;
+  uint8_t game_type : 4;
+  uint8_t game_progress : 4;
+  uint16_t stage_remain_time;
 
-typedef __PACKED_STRUCT //0002
+  uint64_t SyncTimeStamp;
+}
+ext_game_state_t;
+
+typedef __PACKED_STRUCT  // 0002
 {
-    uint8_t winner;
-} ext_game_result_t;
+  uint8_t winner;
+}
+ext_game_result_t;
 
-typedef __PACKED_STRUCT	//0003
+typedef __PACKED_STRUCT  // 0003
 {
-    uint16_t red_1_robot_HP;
-    uint16_t red_2_robot_HP;
-    uint16_t red_3_robot_HP;
-    uint16_t red_4_robot_HP;
-    uint16_t red_5_robot_HP;
-    uint16_t red_7_robot_HP;
-		uint16_t red_outpost_HP;
-    uint16_t red_base_HP;
-    uint16_t blue_1_robot_HP;
-    uint16_t blue_2_robot_HP;
-    uint16_t blue_3_robot_HP;
-    uint16_t blue_4_robot_HP;
-    uint16_t blue_5_robot_HP;
-    uint16_t blue_7_robot_HP;
-		uint16_t blue_outpost_HP;
-    uint16_t blue_base_HP;
-} ext_game_robot_HP_t;
-typedef __PACKED_STRUCT //0101
+  uint16_t red_1_robot_HP;
+  uint16_t red_2_robot_HP;
+  uint16_t red_3_robot_HP;
+  uint16_t red_4_robot_HP;
+  uint16_t red_5_robot_HP;
+  uint16_t red_7_robot_HP;
+  uint16_t red_outpost_HP;
+  uint16_t red_base_HP;
+  uint16_t blue_1_robot_HP;
+  uint16_t blue_2_robot_HP;
+  uint16_t blue_3_robot_HP;
+  uint16_t blue_4_robot_HP;
+  uint16_t blue_5_robot_HP;
+  uint16_t blue_7_robot_HP;
+  uint16_t blue_outpost_HP;
+  uint16_t blue_base_HP;
+}
+ext_game_robot_HP_t;
+typedef __PACKED_STRUCT  // 0101
 {
-    uint32_t event_type;
-} ext_event_data_t;
+  uint32_t event_type;
+}
+ext_event_data_t;
 
-typedef __PACKED_STRUCT //0x0102
+typedef __PACKED_STRUCT  // 0x0102
 {
-  uint8_t reserved; 
-  uint8_t supply_robot_id; 
-  uint8_t supply_projectile_step; 
-  uint8_t supply_projectile_num; 
-} ext_supply_projectile_action_t;
+  uint8_t reserved;
+  uint8_t supply_robot_id;
+  uint8_t supply_projectile_step;
+  uint8_t supply_projectile_num;
+}
+ext_supply_projectile_action_t;
 
-
-typedef __PACKED_STRUCT //0x0103
+typedef __PACKED_STRUCT  // 0x0103
 {
-    uint8_t supply_projectile_id;
-    uint8_t supply_robot_id;
-    uint8_t supply_num;
-} ext_supply_projectile_booking_t;
+  uint8_t supply_projectile_id;
+  uint8_t supply_robot_id;
+  uint8_t supply_num;
+}
+ext_supply_projectile_booking_t;
 
-typedef __PACKED_STRUCT //0x0104
+typedef __PACKED_STRUCT  // 0x0104
 {
-    uint8_t level;
-    uint8_t offending_robot_id;
-    uint8_t count;
-} ext_referee_warning_t;
+  uint8_t level;
+  uint8_t offending_robot_id;
+  uint8_t count;
+}
+ext_referee_warning_t;
 
-typedef __PACKED_STRUCT //0x0105
+typedef __PACKED_STRUCT  // 0x0105
 {
-	uint8_t dart_remaining_time;
-    uint16_t dart_info;
-} ext_dart_remaining_time_t;
+  uint8_t dart_remaining_time;
+  uint16_t dart_info;
+}
+ext_dart_remaining_time_t;
 
-typedef __PACKED_STRUCT//0x0201
+typedef __PACKED_STRUCT  // 0x0201
 {
-    uint8_t robot_id;
-    uint8_t robot_level;
-    uint16_t current_HP;
-    uint16_t maximum_HP;
-    uint16_t shooter_barrel_cooling_value;
-    uint16_t shooter_barrel_heat_limit;
-    uint16_t chassis_power_limit;
-    uint8_t power_management_gimbal_output : 1;
-    uint8_t power_management_chassis_output : 1;
-    uint8_t power_management_shooter_output : 1;
-} ext_game_robot_status_t;
+  uint8_t robot_id;
+  uint8_t robot_level;
+  uint16_t current_HP;
+  uint16_t maximum_HP;
+  uint16_t shooter_barrel_cooling_value;
+  uint16_t shooter_barrel_heat_limit;
+  uint16_t chassis_power_limit;
+  uint8_t power_management_gimbal_output : 1;
+  uint8_t power_management_chassis_output : 1;
+  uint8_t power_management_shooter_output : 1;
+}
+ext_game_robot_status_t;
 
-typedef __PACKED_STRUCT //0x0202
+typedef __PACKED_STRUCT  // 0x0202
 {
-    uint16_t chassis_voltage;
-    uint16_t chassis_current;
-    float chassis_power;
-    uint16_t buffer_energy;
-    uint16_t shooter_17mm_1_barrel_heat;
-    uint16_t shooter_17mm_2_barrel_heat;
-    uint16_t shooter_42mm_barrel_heat;
-} ext_power_heat_data_t;
+  uint16_t chassis_voltage;
+  uint16_t chassis_current;
+  float chassis_power;
+  uint16_t buffer_energy;
+  uint16_t shooter_17mm_1_barrel_heat;
+  uint16_t shooter_17mm_2_barrel_heat;
+  uint16_t shooter_42mm_barrel_heat;
+}
+ext_power_heat_data_t;
 
-typedef __PACKED_STRUCT //0x0203
+typedef __PACKED_STRUCT  // 0x0203
 {
-    float x;
-    float y;
-    float angle;
-} ext_game_robot_pos_t;
+  float x;
+  float y;
+  float angle;
+}
+ext_game_robot_pos_t;
 
-typedef __PACKED_STRUCT //0x0204
+typedef __PACKED_STRUCT  // 0x0204
 {
-    uint8_t recovery_buff;
-    uint8_t cooling_buff;
-    uint8_t defence_buff;
-    uint8_t vulnerability_buff;
-    uint16_t attack_buff;
-} ext_buff_musk_t;
+  uint8_t recovery_buff;
+  uint8_t cooling_buff;
+  uint8_t defence_buff;
+  uint8_t vulnerability_buff;
+  uint16_t attack_buff;
+}
+ext_buff_musk_t;
 
-typedef __PACKED_STRUCT //0x0205
+typedef __PACKED_STRUCT  // 0x0205
 {
-    uint8_t airforce_status;
-    uint8_t time_remain;
-} aerial_robot_energy_t;
+  uint8_t airforce_status;
+  uint8_t time_remain;
+}
+aerial_robot_energy_t;
 
-typedef __PACKED_STRUCT //0x0206
+typedef __PACKED_STRUCT  // 0x0206
 {
-    uint8_t armor_id : 4; 
-	uint8_t HP_deduction_reason : 4; 
-} ext_robot_hurt_t;
+  uint8_t armor_id : 4;
+  uint8_t HP_deduction_reason : 4;
+}
+ext_robot_hurt_t;
 
-typedef __PACKED_STRUCT //0x0207
+typedef __PACKED_STRUCT  // 0x0207
 {
-	uint8_t bullet_type;
-    uint8_t shooter_number;
-    uint8_t launching_frequency;
-    float initial_speed;
-} ext_shoot_data_t;
+  uint8_t bullet_type;
+  uint8_t shooter_number;
+  uint8_t launching_frequency;
+  float initial_speed;
+}
+ext_shoot_data_t;
 
-typedef __PACKED_STRUCT //0x0208
+typedef __PACKED_STRUCT  // 0x0208
 {
-	uint16_t projectile_allowance_17mm;
-    uint16_t projectile_allowance_42mm;
-    uint16_t remaining_gold_coin;
-} ext_bullet_remaining_t;
+  uint16_t projectile_allowance_17mm;
+  uint16_t projectile_allowance_42mm;
+  uint16_t remaining_gold_coin;
+}
+ext_bullet_remaining_t;
 
-typedef __PACKED_STRUCT //0x0209
+typedef __PACKED_STRUCT  // 0x0209
 {
-	uint32_t rfid_status;
-} ext_rfid_status_t;
+  uint32_t rfid_status;
+}
+ext_rfid_status_t;
 
-typedef __PACKED_STRUCT //0x020A
+typedef __PACKED_STRUCT  // 0x020A
 {
-	uint8_t dart_launch_opening_status;
-    uint8_t reserved;
-    uint16_t target_change_time;
-    uint16_t latest_launch_cmd_time;
-} ext_dart_client_cmd_t;
+  uint8_t dart_launch_opening_status;
+  uint8_t reserved;
+  uint16_t target_change_time;
+  uint16_t latest_launch_cmd_time;
+}
+ext_dart_client_cmd_t;
 
-typedef __PACKED_STRUCT //0x0301
+typedef __PACKED_STRUCT  // 0x0301
 {
-    uint16_t data_cmd_id; 
-	uint16_t sender_id; 
-	uint16_t receiver_id; 
-	/*uint8_t user_data[x]; */
-} ext_student_interactive_data_t;
+  uint16_t data_cmd_id;
+  uint16_t sender_id;
+  uint16_t receiver_id;
+  /*uint8_t user_data[x]; */
+}
+ext_student_interactive_data_t;
 
-typedef __PACKED_STRUCT
-{
-    float data1;
-    float data2;
-    float data3;
-    uint8_t data4;
-} custom_data_t;
+typedef __PACKED_STRUCT {
+  float data1;
+  float data2;
+  float data3;
+  uint8_t data4;
+}
+custom_data_t;
 
+typedef __PACKED_STRUCT { uint8_t data[64]; }
+ext_up_stream_data_t;
 
-typedef __PACKED_STRUCT
-{
-    uint8_t data[64];
-} ext_up_stream_data_t;
+typedef __PACKED_STRUCT { uint8_t data[32]; }
+ext_download_stream_data_t;
 
-typedef __PACKED_STRUCT
-{
-    uint8_t data[32];
-} ext_download_stream_data_t;
-
-
-
-
-
-
-typedef enum
-{
-    GAME_STATE_CMD_ID                 = 0x0001,//±ÈÈü×´Ì¬Êý¾Ý
-    GAME_RESULT_CMD_ID                = 0x0002,//±ÈÈü½á¹ûÊý¾Ý
-    GAME_ROBOT_HP_CMD_ID              = 0x0003,//±ÈÈü»úÆ÷ÈËÑªÁ¿Êý¾Ý
-    FIELD_EVENTS_CMD_ID               = 0x0101,//³¡µØÊÂ¼þÊý¾Ý
-    SUPPLY_PROJECTILE_ACTION_CMD_ID   = 0x0102,//³¡µØ²¹¸øÕ¾¶¯×÷±êÊ¶Êý¾Ý
-    SUPPLY_PROJECTILE_BOOKING_CMD_ID  = 0x0103,//ÇëÇó²¹¸øÕ¾²¹µ¥Êý¾Ý£¨RM¶Ô¿¹ÈüÉÐÎ´¿ª·Å£©
-    REFEREE_WARNING_CMD_ID            = 0x0104,//²ÃÅÐ¾¯¸æÊý¾Ý
-	DART_FIRE_COUNTDOWN_CMD_ID     	= 0x0105,//·ÉïÚ·¢Éä¿Úµ¹¼ÆÊ±
-    ROBOT_STATE_CMD_ID                = 0x0201,//»úÆ÷ÈË×´Ì¬Êý¾Ý
-    POWER_HEAT_DATA_CMD_ID            = 0x0202,//ÊµÊ±¹¦ÂÊÈÈÁ¿Êý¾Ý
-    ROBOT_POS_CMD_ID                  = 0x0203,//»úÆ÷ÈËÎ»ÖÃÊý¾Ý
-    BUFF_MUSK_CMD_ID                  = 0x0204,//»úÆ÷ÈËÔöÒæÊý¾Ý
-    AERIAL_ROBOT_ENERGY_CMD_ID        = 0x0205,//¿ÕÖÐ»úÆ÷ÈËÄÜÁ¿×´Ì¬Êý¾Ý
-    ROBOT_HURT_CMD_ID                 = 0x0206,//ÉËº¦×´Ì¬Êý¾Ý
-    SHOOT_DATA_CMD_ID                 = 0x0207,//ÊµÊ±Éä»÷Êý¾Ý
-	BULLET_REMAINING_CMD_ID           = 0x0208,//×Óµ¯Ê£Óà·¢ËÍÊý
-	ROBOT_RFID_STATUS_ID				= 0x0209,//»úÆ÷ÈË RFID ×´Ì¬
-	DART_CLIENT_CMD_ID           			= 0x020A,//·ÉïÚ¿Í»úÆ÷ÈË»§¶ËÖ¸ÁîÊé
-    STUDENT_INTERACTIVE_DATA_CMD_ID   = 0x0301,//»úÆ÷ÈË¼ä½»»¥Êý¾Ý
-	CUSTOM_CONTRROLL_INTERACTION_DATA	=	0x0302,//×Ô¶¨Òå¿ØÖÆÆ÷½»»¥Êý¾Ý½Ó¿Ú
-	CLIENT_SIDE_MAP_INTERACTION				=	0x0303,//¿Í»§¶ËÐ¡µØÍ¼½»»¥Êý¾Ý
-	KEYBOARD_MOUSE_INFORMATION				= 0x0304,//¼üÅÌ¡¢Êó±êÐÅÏ¢
-	CLIENT_SIDE_MAP_RC_INFORMATION		= 0x0305,//¿Í»§¶ËÐ¡µØÍ¼½ÓÊÕÐÅÏ¢
-    IDCustomData,
-}referee_cmd_id_t;
-typedef  struct
-{
+typedef enum {
+  GAME_STATE_CMD_ID = 0x0001,                // ï¿½ï¿½ï¿½ï¿½×´Ì¬ï¿½ï¿½ï¿½ï¿½
+  GAME_RESULT_CMD_ID = 0x0002,               // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+  GAME_ROBOT_HP_CMD_ID = 0x0003,             // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+  FIELD_EVENTS_CMD_ID = 0x0101,              // ï¿½ï¿½ï¿½ï¿½ï¿½Â¼ï¿½ï¿½ï¿½ï¿½ï¿½
+  SUPPLY_PROJECTILE_ACTION_CMD_ID = 0x0102,  // ï¿½ï¿½ï¿½Ø²ï¿½ï¿½ï¿½Õ¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¶ï¿½ï¿½ï¿½ï¿½
+  SUPPLY_PROJECTILE_BOOKING_CMD_ID =
+      0x0103,  // ï¿½ï¿½ï¿½ó²¹¸ï¿½Õ¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý£ï¿½RMï¿½Ô¿ï¿½ï¿½ï¿½ï¿½ï¿½Î´ï¿½ï¿½ï¿½Å£ï¿½
+  REFEREE_WARNING_CMD_ID = 0x0104,             // ï¿½ï¿½ï¿½Ð¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+  DART_FIRE_COUNTDOWN_CMD_ID = 0x0105,         // ï¿½ï¿½ï¿½Ú·ï¿½ï¿½ï¿½Úµï¿½ï¿½ï¿½Ê±
+  ROBOT_STATE_CMD_ID = 0x0201,                 // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×´Ì¬ï¿½ï¿½ï¿½ï¿½
+  POWER_HEAT_DATA_CMD_ID = 0x0202,             // ÊµÊ±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+  ROBOT_POS_CMD_ID = 0x0203,                   // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+  BUFF_MUSK_CMD_ID = 0x0204,                   // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+  AERIAL_ROBOT_ENERGY_CMD_ID = 0x0205,         // ï¿½ï¿½ï¿½Ð»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×´Ì¬ï¿½ï¿½ï¿½ï¿½
+  ROBOT_HURT_CMD_ID = 0x0206,                  // ï¿½Ëºï¿½×´Ì¬ï¿½ï¿½ï¿½ï¿½
+  SHOOT_DATA_CMD_ID = 0x0207,                  // ÊµÊ±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+  BULLET_REMAINING_CMD_ID = 0x0208,            // ï¿½Óµï¿½Ê£ï¿½à·¢ï¿½ï¿½ï¿½ï¿½
+  ROBOT_RFID_STATUS_ID = 0x0209,               // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ RFID ×´Ì¬
+  DART_CLIENT_CMD_ID = 0x020A,                 // ï¿½ï¿½ï¿½Ú¿Í»ï¿½ï¿½ï¿½ï¿½Ë»ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½ï¿½ï¿½
+  STUDENT_INTERACTIVE_DATA_CMD_ID = 0x0301,    // ï¿½ï¿½ï¿½ï¿½ï¿½Ë¼ä½»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+  CUSTOM_CONTRROLL_INTERACTION_DATA = 0x0302,  // ï¿½Ô¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý½Ó¿ï¿½
+  CLIENT_SIDE_MAP_INTERACTION = 0x0303,        // ï¿½Í»ï¿½ï¿½ï¿½Ð¡ï¿½ï¿½Í¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+  KEYBOARD_MOUSE_INFORMATION = 0x0304,         // ï¿½ï¿½ï¿½Ì¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢
+  CLIENT_SIDE_MAP_RC_INFORMATION = 0x0305,     // ï¿½Í»ï¿½ï¿½ï¿½Ð¡ï¿½ï¿½Í¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢
+  IDCustomData,
+} referee_cmd_id_t;
+typedef struct {
   uint8_t SOF;
   uint16_t data_length;
   uint8_t seq;
   uint8_t CRC8;
 } frame_header_struct_t;
 
-typedef enum
-{
-  STEP_HEADER_SOF  = 0,
-  STEP_LENGTH_LOW  = 1,
+typedef enum {
+  STEP_HEADER_SOF = 0,
+  STEP_LENGTH_LOW = 1,
   STEP_LENGTH_HIGH = 2,
-  STEP_FRAME_SEQ   = 3,
+  STEP_FRAME_SEQ = 3,
   STEP_HEADER_CRC8 = 4,
-  STEP_DATA_CRC16  = 5,
+  STEP_DATA_CRC16 = 5,
 } unpack_step_e;
 
-typedef struct
-{
+typedef struct {
   frame_header_struct_t *p_header;
-  uint16_t       data_len;
-  uint8_t        protocol_packet[REF_PROTOCOL_FRAME_MAX_SIZE];
-  unpack_step_e  unpack_step;
-  uint16_t       index;
+  uint16_t data_len;
+  uint8_t protocol_packet[REF_PROTOCOL_FRAME_MAX_SIZE];
+  unpack_step_e unpack_step;
+  uint16_t index;
 } unpack_data_t;
 
 #pragma pack(pop)
-
-
 
 extern void usart6_init(uint8_t *rx1_buf, uint8_t *rx2_buf, uint16_t dma_buf_num);
 
@@ -307,9 +306,8 @@ extern ext_game_robot_HP_t game_robot_HP_t;
 
 extern ext_event_data_t field_event;
 extern ext_supply_projectile_action_t supply_projectile_action_t;
-//extern ext_supply_projectile_booking_t supply_projectile_booking_t;
+// extern ext_supply_projectile_booking_t supply_projectile_booking_t;
 extern ext_referee_warning_t referee_warning_t;
-
 
 extern ext_game_robot_status_t robot_state;
 extern ext_power_heat_data_t power_heat_data_t;
@@ -339,9 +337,7 @@ extern void get_shoot_heat2_limit_and_heat2(uint16_t *heat2_limit, uint16_t *hea
 extern Queue_t SendBuffer[2];
 void QueueInit(Queue_t *q);
 uint8_t IsFull(Queue_t *q);
-void EnQueue(Queue_t *q, uint8_t *val,uint8_t lenth);
+void EnQueue(Queue_t *q, uint8_t *val, uint8_t lenth);
 uint8_t IsEmpty(Queue_t *q);
-int Pop(Queue_t *buffer1,Queue_t *buffer2,uint8_t data[11]);
+int Pop(Queue_t *buffer1, Queue_t *buffer2, uint8_t data[11]);
 #endif
-
-

@@ -1,249 +1,215 @@
 #include "user_lib.h"
 #include "arm_math.h"
-//#include "math.h"
+// #include "math.h"
 
 /**
-  * @brief          Ð±²¨º¯Êý³õÊ¼»¯
-  * @author         RM
-  * @param[in]      Ð±²¨º¯Êý½á¹¹Ìå
-  * @param[in]      ¼ä¸ôµÄÊ±¼ä£¬µ¥Î» s
-  * @param[in]      ×î´óÖµ
-  * @param[in]      ×îÐ¡Öµ
-  * @retval         ·µ»Ø¿Õ
-  */
-void ramp_init(ramp_function_source_t *ramp_source_type, fp32 frame_period, fp32 max, fp32 min)
-{
-    ramp_source_type->frame_period = frame_period;
-    ramp_source_type->max_value = max;
-    ramp_source_type->min_value = min;
-    ramp_source_type->input = 0.0f;
-    ramp_source_type->out = 0.0f;
-}
-
-/**
-  * @brief          Ð±²¨º¯Êý¼ÆËã£¬¸ù¾ÝÊäÈëµÄÖµ½øÐÐµþ¼Ó£¬ ÊäÈëµ¥Î»Îª /s ¼´Ò»ÃëºóÔö¼ÓÊäÈëµÄÖµ
-  * @author         RM
-  * @param[in]      Ð±²¨º¯Êý½á¹¹Ìå
-  * @param[in]      ÊäÈëÖµ
-  * @param[in]      ÂË²¨²ÎÊý
-  * @retval         ·µ»Ø¿Õ
-  */
-void ramp_calc(ramp_function_source_t *ramp_source_type, fp32 input)
-{
-    ramp_source_type->input = input;
-    ramp_source_type->out += ramp_source_type->input * ramp_source_type->frame_period;
-    if (ramp_source_type->out > ramp_source_type->max_value)
-    {
-        ramp_source_type->out = ramp_source_type->max_value;
-    }
-    else if (ramp_source_type->out < ramp_source_type->min_value)
-    {
-        ramp_source_type->out = ramp_source_type->min_value;
-    }
-}
-/**
-  * @brief          Ò»½×µÍÍ¨ÂË²¨³õÊ¼»¯
-  * @author         RM
-  * @param[in]      Ò»½×µÍÍ¨ÂË²¨½á¹¹Ìå
-  * @param[in]      ¼ä¸ôµÄÊ±¼ä£¬µ¥Î» s
-  * @param[in]      ÂË²¨²ÎÊý
-  * @retval         ·µ»Ø¿Õ
-  */
-void first_order_filter_init(first_order_filter_type_t *first_order_filter_type, fp32 frame_period, fp32 num)
-{
-    first_order_filter_type->frame_period = frame_period;
-    first_order_filter_type->num = num;
-    first_order_filter_type->input = 0.0f;
-    first_order_filter_type->out = 0.0f;
-}
-
-/**
-  * @brief          Ò»½×µÍÍ¨ÂË²¨¼ÆËã
-  * @author         RM
-  * @param[in]      Ò»½×µÍÍ¨ÂË²¨½á¹¹Ìå
-  * @param[in]      ¼ä¸ôµÄÊ±¼ä£¬µ¥Î» s
-  * @retval         ·µ»Ø¿Õ
-  */
-void first_order_filter_cali(first_order_filter_type_t *first_order_filter_type, fp32 input)
-{
-    first_order_filter_type->input = input;
-    first_order_filter_type->out =
-            first_order_filter_type->num / (first_order_filter_type->num + first_order_filter_type->frame_period) * first_order_filter_type->out 
-        +   first_order_filter_type->frame_period / (first_order_filter_type->num + first_order_filter_type->frame_period) * first_order_filter_type->input;
-}
-
-//¾ø¶ÔÏÞÖÆ
-void abs_limit(fp32 *num, fp32 Limit)
-{
-    if (*num > Limit)
-    {
-        *num = Limit;
-    }
-    else if (*num < -Limit)
-    {
-        *num = -Limit;
-    }
-}
-
-//ÅÐ¶Ï·ûºÅÎ»
-fp32 sign(fp32 value)
-{
-    if (value >= 0.0f)
-    {
-        return 1.0f;
-    }
-    else
-    {
-        return -1.0f;
-    }
-}
-
-//¸¡µãËÀÇø
-fp32 fp32_deadline(fp32 Value, fp32 minValue, fp32 maxValue)
-{
-    if (Value < maxValue && Value > minValue)
-    {
-        Value = 0.0f;
-    }
-    return Value;
-}
-
-//int26ËÀÇø
-int16_t int16_deadline(int16_t Value, int16_t minValue, int16_t maxValue)
-{
-    if (Value < maxValue && Value > minValue)
-    {
-        Value = 0;
-    }
-    return Value;
-}
-
-//ÏÞ·ùº¯Êý
-fp32 fp32_constrain(fp32 Value, fp32 minValue, fp32 maxValue)
-{
-    if (Value < minValue)
-        return minValue;
-    else if (Value > maxValue)
-        return maxValue;
-    else
-        return Value;
-}
-
-//ÏÞ·ùº¯Êý
-int16_t int16_constrain(int16_t Value, int16_t minValue, int16_t maxValue)
-{
-    if (Value < minValue)
-        return minValue;
-    else if (Value > maxValue)
-        return maxValue;
-    else
-        return Value;
-}
-
-//Ñ­»·ÏÞ·ùº¯Êý
-fp32 loop_fp32_constrain(fp32 Input, fp32 minValue, fp32 maxValue)
-{
-    if (maxValue < minValue)
-    {
-        return Input;
-    }
-
-    if (Input > maxValue)
-    {
-        fp32 len = maxValue - minValue;
-        while (Input > maxValue)
-        {
-            Input -= len;
-        }
-    }
-    else if (Input < minValue)
-    {
-        fp32 len = maxValue - minValue;
-        while (Input < minValue)
-        {
-            Input += len;
-        }
-    }
-    return Input;
-}
-
-//»¡¶È¸ñÊ½»¯Îª-PI~PI
-
-//½Ç¶È¸ñÊ½»¯Îª-180~180
-fp32 theta_format(fp32 Ang)
-{
-    return loop_fp32_constrain(Ang, -180.0f, 180.0f);
-}
-
-fp32 fast_atan2f(fp32 x, fp32 y)
-{
-    fp32 a = fminf(fabsf(x), fabsf(y)) / fmaxf(fabsf(x), fabsf(y));
-    fp32 s = a * a;
-    fp32 r = ((-0.0464964749f * s + 0.15931422f) * s - 0.327622764f) * s * a + a;
-    if (fabsf(y) > fabsf(x)){
-        r = 1.57079637f - r;
-    }
-    if (x < 0){
-        r = 3.14159274f - r;
-    }
-    if (y < 0){
-        r = -r;
-    }
-    return r;
-}
-/**Ò»Î¬¿¨¶ûÂüÂË²¨Æ÷  ÇÒH¾ØÕóÎª 1
- *¿¨¶ûÂüÂË²¨Æ÷
- *@param KFP *kfp ¿¨¶ûÂü½á¹¹Ìå²ÎÊý
- *   float input ÐèÒªÂË²¨µÄ²ÎÊýµÄ²âÁ¿Öµ£¨¼´´«¸ÐÆ÷µÄ²É¼¯Öµ£©
- *@return ÂË²¨ºóµÄ²ÎÊý£¨×îÓÅÖµ£©
+ * @brief          Ð±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½
+ * @author         RM
+ * @param[in]      Ð±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½á¹¹ï¿½ï¿½
+ * @param[in]      ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ä£¬ï¿½ï¿½Î» s
+ * @param[in]      ï¿½ï¿½ï¿½Öµ
+ * @param[in]      ï¿½ï¿½Ð¡Öµ
+ * @retval         ï¿½ï¿½ï¿½Ø¿ï¿½
  */
- float KalmanFilter(KFP *kfp,float Zk , float current_1,float current_2)
- {  
-    // ÏÈÑéµÄ¼ÆËã£ºA*ÉÏÒ»Ê±¿ÌÔ¤²âÖµ + B*ÏµÍ³ÊäÈëÖµ
-    kfp->X_k = kfp->A * kfp->out + kfp->B[0] * current_1 + kfp->B[1] * current_2;
-    //Ô¤²âÐ­·½²î·½³Ì£ºkÊ±¿ÌÏµÍ³¹ÀËãÐ­·½²î = k-1Ê±¿ÌµÄÏµÍ³Ð­·½²î + ¹ý³ÌÔëÉùÐ­·½²î
-    kfp->Now_P = kfp->A * kfp->LastP + kfp->Q;
-    //¿¨¶ûÂüÔöÒæ·½³Ì£º¿¨¶ûÂüÔöÒæ = kÊ±¿ÌÏµÍ³¹ÀËãÐ­·½²î / £¨kÊ±¿ÌÏµÍ³¹ÀËãÐ­·½²î + ¹Û²âÔëÉùÐ­·½²î£©
-    kfp->Kg = kfp->Now_P / (kfp->Now_P + kfp->R);
-    //¸üÐÂ×îÓÅÖµ·½³Ì£ºkÊ±¿Ì×´Ì¬±äÁ¿µÄ×îÓÅÖµ = ×´Ì¬±äÁ¿µÄÔ¤²âÖµ + ¿¨¶ûÂüÔöÒæ * £¨²âÁ¿Öµ - ×´Ì¬±äÁ¿µÄÔ¤²âÖµ£©
-    kfp->out = kfp->X_k + kfp->Kg * (Zk -kfp->out);//ÒòÎªÕâÒ»´ÎµÄÔ¤²âÖµ¾ÍÊÇÉÏÒ»´ÎµÄÊä³öÖµ
-    //¸üÐÂÐ­·½²î·½³Ì: ±¾´ÎµÄÏµÍ³Ð­·½²î¸¶¸ø kfp->LastP ÍþÏÂÒ»´ÎÔËËã×¼±¸¡£
-    kfp->LastP = (1-kfp->Kg) * kfp->Now_P;
-    return kfp->out;
- }
-void KalmanFilter_init(KFP *kfp,float A ,float B_1 ,float B_2,float LastP,float Q,float R)
-{
-    kfp->A = A;
-    kfp->B[0] = B_1;
-    kfp->B[1] = B_2;
-    kfp->LastP = LastP;
-    kfp->Q = Q;
-    kfp->R = R;
-    kfp->X_k = 0;
-    kfp->out = 0;
-    kfp->Now_P = 0;
-    kfp->Kg = 0;
+void ramp_init(ramp_function_source_t *ramp_source_type, fp32 frame_period, fp32 max, fp32 min) {
+  ramp_source_type->frame_period = frame_period;
+  ramp_source_type->max_value = max;
+  ramp_source_type->min_value = min;
+  ramp_source_type->input = 0.0f;
+  ramp_source_type->out = 0.0f;
+}
+
+/**
+ * @brief          Ð±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ã£¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½ï¿½Ðµï¿½ï¿½Ó£ï¿½ ï¿½ï¿½ï¿½ëµ¥Î»Îª /s ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµ
+ * @author         RM
+ * @param[in]      Ð±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½á¹¹ï¿½ï¿½
+ * @param[in]      ï¿½ï¿½ï¿½ï¿½Öµ
+ * @param[in]      ï¿½Ë²ï¿½ï¿½ï¿½ï¿½ï¿½
+ * @retval         ï¿½ï¿½ï¿½Ø¿ï¿½
+ */
+void ramp_calc(ramp_function_source_t *ramp_source_type, fp32 input) {
+  ramp_source_type->input = input;
+  ramp_source_type->out += ramp_source_type->input * ramp_source_type->frame_period;
+  if (ramp_source_type->out > ramp_source_type->max_value) {
+    ramp_source_type->out = ramp_source_type->max_value;
+  } else if (ramp_source_type->out < ramp_source_type->min_value) {
+    ramp_source_type->out = ramp_source_type->min_value;
+  }
+}
+/**
+ * @brief          Ò»ï¿½×µï¿½Í¨ï¿½Ë²ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½
+ * @author         RM
+ * @param[in]      Ò»ï¿½×µï¿½Í¨ï¿½Ë²ï¿½ï¿½á¹¹ï¿½ï¿½
+ * @param[in]      ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ä£¬ï¿½ï¿½Î» s
+ * @param[in]      ï¿½Ë²ï¿½ï¿½ï¿½ï¿½ï¿½
+ * @retval         ï¿½ï¿½ï¿½Ø¿ï¿½
+ */
+void first_order_filter_init(first_order_filter_type_t *first_order_filter_type, fp32 frame_period, fp32 num) {
+  first_order_filter_type->frame_period = frame_period;
+  first_order_filter_type->num = num;
+  first_order_filter_type->input = 0.0f;
+  first_order_filter_type->out = 0.0f;
+}
+
+/**
+ * @brief          Ò»ï¿½×µï¿½Í¨ï¿½Ë²ï¿½ï¿½ï¿½ï¿½ï¿½
+ * @author         RM
+ * @param[in]      Ò»ï¿½×µï¿½Í¨ï¿½Ë²ï¿½ï¿½á¹¹ï¿½ï¿½
+ * @param[in]      ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ä£¬ï¿½ï¿½Î» s
+ * @retval         ï¿½ï¿½ï¿½Ø¿ï¿½
+ */
+void first_order_filter_cali(first_order_filter_type_t *first_order_filter_type, fp32 input) {
+  first_order_filter_type->input = input;
+  first_order_filter_type->out =
+      first_order_filter_type->num / (first_order_filter_type->num + first_order_filter_type->frame_period) *
+          first_order_filter_type->out +
+      first_order_filter_type->frame_period / (first_order_filter_type->num + first_order_filter_type->frame_period) *
+          first_order_filter_type->input;
+}
+
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+void abs_limit(fp32 *num, fp32 Limit) {
+  if (*num > Limit) {
+    *num = Limit;
+  } else if (*num < -Limit) {
+    *num = -Limit;
+  }
+}
+
+// ï¿½Ð¶Ï·ï¿½ï¿½ï¿½Î»
+fp32 sign(fp32 value) {
+  if (value >= 0.0f) {
+    return 1.0f;
+  } else {
+    return -1.0f;
+  }
+}
+
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+fp32 fp32_deadline(fp32 Value, fp32 minValue, fp32 maxValue) {
+  if (Value < maxValue && Value > minValue) {
+    Value = 0.0f;
+  }
+  return Value;
+}
+
+// int26ï¿½ï¿½ï¿½ï¿½
+int16_t int16_deadline(int16_t Value, int16_t minValue, int16_t maxValue) {
+  if (Value < maxValue && Value > minValue) {
+    Value = 0;
+  }
+  return Value;
+}
+
+// ï¿½Þ·ï¿½ï¿½ï¿½ï¿½ï¿½
+fp32 fp32_constrain(fp32 Value, fp32 minValue, fp32 maxValue) {
+  if (Value < minValue)
+    return minValue;
+  else if (Value > maxValue)
+    return maxValue;
+  else
+    return Value;
+}
+
+// ï¿½Þ·ï¿½ï¿½ï¿½ï¿½ï¿½
+int16_t int16_constrain(int16_t Value, int16_t minValue, int16_t maxValue) {
+  if (Value < minValue)
+    return minValue;
+  else if (Value > maxValue)
+    return maxValue;
+  else
+    return Value;
+}
+
+// Ñ­ï¿½ï¿½ï¿½Þ·ï¿½ï¿½ï¿½ï¿½ï¿½
+fp32 loop_fp32_constrain(fp32 Input, fp32 minValue, fp32 maxValue) {
+  if (maxValue < minValue) {
+    return Input;
+  }
+
+  if (Input > maxValue) {
+    fp32 len = maxValue - minValue;
+    while (Input > maxValue) {
+      Input -= len;
+    }
+  } else if (Input < minValue) {
+    fp32 len = maxValue - minValue;
+    while (Input < minValue) {
+      Input += len;
+    }
+  }
+  return Input;
+}
+
+// ï¿½ï¿½ï¿½È¸ï¿½Ê½ï¿½ï¿½Îª-PI~PI
+
+// ï¿½Ç¶È¸ï¿½Ê½ï¿½ï¿½Îª-180~180
+fp32 theta_format(fp32 Ang) { return loop_fp32_constrain(Ang, -180.0f, 180.0f); }
+
+fp32 fast_atan2f(fp32 x, fp32 y) {
+  fp32 a = fminf(fabsf(x), fabsf(y)) / fmaxf(fabsf(x), fabsf(y));
+  fp32 s = a * a;
+  fp32 r = ((-0.0464964749f * s + 0.15931422f) * s - 0.327622764f) * s * a + a;
+  if (fabsf(y) > fabsf(x)) {
+    r = 1.57079637f - r;
+  }
+  if (x < 0) {
+    r = 3.14159274f - r;
+  }
+  if (y < 0) {
+    r = -r;
+  }
+  return r;
+}
+/**Ò»Î¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ë²ï¿½ï¿½ï¿½  ï¿½ï¿½Hï¿½ï¿½ï¿½ï¿½Îª 1
+ *ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ë²ï¿½ï¿½ï¿½
+ *@param KFP *kfp ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½á¹¹ï¿½ï¿½ï¿½ï¿½ï¿½
+ *   float input ï¿½ï¿½Òªï¿½Ë²ï¿½ï¿½Ä²ï¿½ï¿½ï¿½ï¿½Ä²ï¿½ï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä²É¼ï¿½Öµï¿½ï¿½
+ *@return ï¿½Ë²ï¿½ï¿½ï¿½Ä²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½
+ */
+float KalmanFilter(KFP *kfp, float Zk, float current_1, float current_2) {
+  // ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ã£ºA*ï¿½ï¿½Ò»Ê±ï¿½ï¿½Ô¤ï¿½ï¿½Öµ + B*ÏµÍ³ï¿½ï¿½ï¿½ï¿½Öµ
+  kfp->X_k = kfp->A * kfp->out + kfp->B[0] * current_1 + kfp->B[1] * current_2;
+  // Ô¤ï¿½ï¿½Ð­ï¿½ï¿½ï¿½î·½ï¿½Ì£ï¿½kÊ±ï¿½ï¿½ÏµÍ³ï¿½ï¿½ï¿½ï¿½Ð­ï¿½ï¿½ï¿½ï¿½ = k-1Ê±ï¿½Ìµï¿½ÏµÍ³Ð­ï¿½ï¿½ï¿½ï¿½ +
+  // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð­ï¿½ï¿½ï¿½ï¿½
+  kfp->Now_P = kfp->A * kfp->LastP + kfp->Q;
+  // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½æ·½ï¿½Ì£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ = kÊ±ï¿½ï¿½ÏµÍ³ï¿½ï¿½ï¿½ï¿½Ð­ï¿½ï¿½ï¿½ï¿½ / ï¿½ï¿½kÊ±ï¿½ï¿½ÏµÍ³ï¿½ï¿½ï¿½ï¿½Ð­ï¿½ï¿½ï¿½ï¿½ +
+  // ï¿½Û²ï¿½ï¿½ï¿½ï¿½ï¿½Ð­ï¿½ï¿½ï¿½î£©
+  kfp->Kg = kfp->Now_P / (kfp->Now_P + kfp->R);
+  // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½ï¿½Ì£ï¿½kÊ±ï¿½ï¿½×´Ì¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµ = ×´Ì¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô¤ï¿½ï¿½Öµ + ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ * ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµ - ×´Ì¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô¤ï¿½ï¿½Öµï¿½ï¿½
+  kfp->out = kfp->X_k + kfp->Kg * (Zk - kfp->out);  // ï¿½ï¿½Îªï¿½ï¿½Ò»ï¿½Îµï¿½Ô¤ï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½Îµï¿½ï¿½ï¿½ï¿½Öµ
+  // ï¿½ï¿½ï¿½ï¿½Ð­ï¿½ï¿½ï¿½î·½ï¿½ï¿½: ï¿½ï¿½ï¿½Îµï¿½ÏµÍ³Ð­ï¿½ï¿½ï¿½î¸¶ï¿½ï¿½ kfp->LastP
+  // ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×¼ï¿½ï¿½ï¿½ï¿½
+  kfp->LastP = (1 - kfp->Kg) * kfp->Now_P;
+  return kfp->out;
+}
+void KalmanFilter_init(KFP *kfp, float A, float B_1, float B_2, float LastP, float Q, float R) {
+  kfp->A = A;
+  kfp->B[0] = B_1;
+  kfp->B[1] = B_2;
+  kfp->LastP = LastP;
+  kfp->Q = Q;
+  kfp->R = R;
+  kfp->X_k = 0;
+  kfp->out = 0;
+  kfp->Now_P = 0;
+  kfp->Kg = 0;
 }
 
 // Function to calculate absolute value
-float Fabs(float a)
-{
-	// If a is negative, return its negation
-	if (a < 0)
-		return -a;
-	// Otherwise, return a
-	return a;
+float Fabs(float a) {
+  // If a is negative, return its negation
+  if (a < 0) return -a;
+  // Otherwise, return a
+  return a;
 }
-fp32 Calc(double x)
-{
-	if (x > 0)
-		return sqrt(2.0 * x) / 2.0;
-	else
-		return -sqrt(-2.0 * x) / 2.0;
+fp32 Calc(double x) {
+  if (x > 0)
+    return sqrt(2.0 * x) / 2.0;
+  else
+    return -sqrt(-2.0 * x) / 2.0;
 }
-fp32 sig(fp32 x)
-{
-	if (x > 0)
-		return 1;
-	return -1;
+fp32 sig(fp32 x) {
+  if (x > 0) return 1;
+  return -1;
 }

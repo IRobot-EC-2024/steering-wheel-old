@@ -1,10 +1,10 @@
 /**
   ****************************(C) COPYRIGHT 2019 DJI****************************
   * @file       remote_control.c/h
-  * @brief      Ò£¿ØÆ÷´¦Àí£¬Ò£¿ØÆ÷ÊÇÍ¨¹ýÀàËÆSBUSµÄÐ­Òé´«Êä£¬ÀûÓÃDMA´«Êä·½Ê½½ÚÔ¼CPU
-  *             ×ÊÔ´£¬ÀûÓÃ´®¿Ú¿ÕÏÐÖÐ¶ÏÀ´À­Æð´¦Àíº¯Êý£¬Í¬Ê±Ìá¹©Ò»Ð©µôÏßÖØÆôDMA£¬´®¿Ú
-  *             µÄ·½Ê½±£Ö¤ÈÈ²å°ÎµÄÎÈ¶¨ÐÔ¡£
-  * @note       ¸ÃÈÎÎñÊÇÍ¨¹ý´®¿ÚÖÐ¶ÏÆô¶¯£¬²»ÊÇfreeRTOSÈÎÎñ
+  * @brief      Ò£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¨ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½SBUSï¿½ï¿½Ð­ï¿½é´«ï¿½ä£¬ï¿½ï¿½ï¿½ï¿½DMAï¿½ï¿½ï¿½ä·½Ê½ï¿½ï¿½Ô¼CPU
+  *             ï¿½ï¿½Ô´ï¿½ï¿½ï¿½ï¿½ï¿½Ã´ï¿½ï¿½Ú¿ï¿½ï¿½ï¿½ï¿½Ð¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¬Ê±ï¿½á¹©Ò»Ð©ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½DMAï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+  *             ï¿½Ä·ï¿½Ê½ï¿½ï¿½Ö¤ï¿½È²ï¿½Îµï¿½ï¿½È¶ï¿½ï¿½Ô¡ï¿½
+  * @note       ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¨ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½freeRTOSï¿½ï¿½ï¿½ï¿½
   * @history
   *  Version    Date            Author          Modification
   *  V1.0.0     Dec-26-2018     RM              1. done
@@ -25,288 +25,201 @@
 #include "bsp_usart.h"
 #include "string.h"
 
-
-
-//Ò£¿ØÆ÷³ö´íÊý¾ÝÉÏÏÞ
+// Ò£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 #define RC_CHANNAL_ERROR_VALUE 700
 
 extern UART_HandleTypeDef huart3;
 extern DMA_HandleTypeDef hdma_usart3_rx;
 
-
-//È¡Õýº¯Êý
+// È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 static int16_t RC_abs(int16_t value);
 /**
-  * @brief          remote control protocol resolution
-  * @param[in]      sbus_buf: raw data point
-  * @param[out]     rc_ctrl: remote control data struct point
-  * @retval         none
-  */
+ * @brief          remote control protocol resolution
+ * @param[in]      sbus_buf: raw data point
+ * @param[out]     rc_ctrl: remote control data struct point
+ * @retval         none
+ */
 /**
-  * @brief          Ò£¿ØÆ÷Ð­Òé½âÎö
-  * @param[in]      sbus_buf: Ô­ÉúÊý¾ÝÖ¸Õë
-  * @param[out]     rc_ctrl: Ò£¿ØÆ÷Êý¾ÝÖ¸
-  * @retval         none
-  */
+ * @brief          Ò£ï¿½ï¿½ï¿½ï¿½Ð­ï¿½ï¿½ï¿½ï¿½ï¿½
+ * @param[in]      sbus_buf: Ô­ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½
+ * @param[out]     rc_ctrl: Ò£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸
+ * @retval         none
+ */
 void sbus_to_rc(uint8_t DmaBufNmb);
 
-//remote control data 
-//Ò£¿ØÆ÷¿ØÖÆ±äÁ¿
+// remote control data
+// Ò£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ±ï¿½ï¿½ï¿½
 RC_ctrl_t rc_ctrl;
-//½ÓÊÕÔ­Ê¼Êý¾Ý£¬Îª18¸ö×Ö½Ú£¬¸øÁË36¸ö×Ö½Ú³¤¶È£¬·ÀÖ¹DMA´«ÊäÔ½½ç
+// ï¿½ï¿½ï¿½ï¿½Ô­Ê¼ï¿½ï¿½ï¿½Ý£ï¿½Îª18ï¿½ï¿½ï¿½Ö½Ú£ï¿½ï¿½ï¿½ï¿½ï¿½36ï¿½ï¿½ï¿½Ö½Ú³ï¿½ï¿½È£ï¿½ï¿½ï¿½Ö¹DMAï¿½ï¿½ï¿½ï¿½Ô½ï¿½ï¿½
 static uint8_t sbus_rx_buf[2][SBUS_RX_BUF_NUM];
 
-//±ßÑØ´¥·¢¼ì²â
+// ï¿½ï¿½ï¿½Ø´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 uint16_t KeyFormerChannal = 0;
 uint16_t KeyJumpChannal = 0;
 uint16_t KeyUsed = 0;
 
+/**
+ * @brief          remote control init
+ * @param[in]      none
+ * @retval         none
+ */
+/**
+ * @brief          Ò£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½
+ * @param[in]      none
+ * @retval         none
+ */
+void remote_control_init(void) { usart3_rx_dma_init(sbus_rx_buf[0], sbus_rx_buf[1], SBUS_RX_BUF_NUM); }
+/**
+ * @brief          get remote control data point
+ * @param[in]      none
+ * @retval         remote control data point
+ */
+/**
+ * @brief          ï¿½ï¿½È¡Ò£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½
+ * @param[in]      none
+ * @retval         Ò£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½
+ */
+const RC_ctrl_t *get_remote_control_point(void) { return &rc_ctrl; }
 
-/**
-  * @brief          remote control init
-  * @param[in]      none
-  * @retval         none
-  */
-/**
-  * @brief          Ò£¿ØÆ÷³õÊ¼»¯
-  * @param[in]      none
-  * @retval         none
-  */
-void remote_control_init(void)
-{
-    usart3_rx_dma_init(sbus_rx_buf[0], sbus_rx_buf[1], SBUS_RX_BUF_NUM);
+// ï¿½Ð¶ï¿½Ò£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ï¿½ï¿½ï¿½
+uint8_t RC_data_is_error(void) {
+  // ï¿½ï¿½Ö¹Ê¹ï¿½ï¿½go toï¿½ï¿½ä£¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+  if (RC_abs(rc_ctrl.rc.ch[0]) > RC_CHANNAL_ERROR_VALUE) {
+    memset(&rc_ctrl, 0, sizeof(rc_ctrl));
+    return 1;
+  }
+  if (RC_abs(rc_ctrl.rc.ch[1]) > RC_CHANNAL_ERROR_VALUE) {
+    memset(&rc_ctrl, 0, sizeof(rc_ctrl));
+    return 1;
+  }
+  if (RC_abs(rc_ctrl.rc.ch[2]) > RC_CHANNAL_ERROR_VALUE) {
+    memset(&rc_ctrl, 0, sizeof(rc_ctrl));
+    return 1;
+  }
+  if (RC_abs(rc_ctrl.rc.ch[3]) > RC_CHANNAL_ERROR_VALUE) {
+    memset(&rc_ctrl, 0, sizeof(rc_ctrl));
+    return 1;
+  }
+  if (rc_ctrl.rc.s[0] == 0) {
+    memset(&rc_ctrl, 0, sizeof(rc_ctrl));
+    return 1;
+  }
+  if (rc_ctrl.rc.s[1] == 0) {
+    memset(&rc_ctrl, 0, sizeof(rc_ctrl));
+    return 1;
+  }
+  return 0;
+}
+
+void slove_RC_lost(void) { usart3_rx_dma_restart(SBUS_RX_BUF_NUM); }
+void slove_data_error(void) { usart3_rx_dma_restart(SBUS_RX_BUF_NUM); }
+
+// È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+static int16_t RC_abs(int16_t value) {
+  if (value > 0) {
+    return value;
+  } else {
+    return -value;
+  }
 }
 /**
-  * @brief          get remote control data point
-  * @param[in]      none
-  * @retval         remote control data point
-  */
+ * @brief          remote control protocol resolution
+ * @param[in]      sbus_buf: raw data point
+ * @param[out]     rc_ctrl: remote control data struct point
+ * @retval         none
+ */
 /**
-  * @brief          »ñÈ¡Ò£¿ØÆ÷Êý¾ÝÖ¸Õë
-  * @param[in]      none
-  * @retval         Ò£¿ØÆ÷Êý¾ÝÖ¸Õë
-  */
-const RC_ctrl_t *get_remote_control_point(void)
-{
-    return &rc_ctrl;
+ * @brief          Ò£ï¿½ï¿½ï¿½ï¿½Ð­ï¿½ï¿½ï¿½ï¿½ï¿½
+ * @param[in]      sbus_buf: Ô­ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½
+ * @param[out]     rc_ctrl: Ò£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸
+ * @retval         none
+ */
+void sbus_to_rc(uint8_t DmaBufNmb) {
+  KeyFormerChannal = rc_ctrl.key.v;
+
+  rc_ctrl.rc.ch[0] = (sbus_rx_buf[DmaBufNmb][0] | (sbus_rx_buf[DmaBufNmb][1] << 8)) & 0x07ff;         //!< Channel 0
+  rc_ctrl.rc.ch[1] = ((sbus_rx_buf[DmaBufNmb][1] >> 3) | (sbus_rx_buf[DmaBufNmb][2] << 5)) & 0x07ff;  //!< Channel 1
+  rc_ctrl.rc.ch[2] = ((sbus_rx_buf[DmaBufNmb][2] >> 6) | (sbus_rx_buf[DmaBufNmb][3] << 2) |           //!< Channel 2
+                      (sbus_rx_buf[DmaBufNmb][4] << 10)) &
+                     0x07ff;
+  rc_ctrl.rc.ch[3] = ((sbus_rx_buf[DmaBufNmb][4] >> 1) | (sbus_rx_buf[DmaBufNmb][5] << 7)) & 0x07ff;  //!< Channel 3
+  rc_ctrl.rc.s[0] = ((sbus_rx_buf[DmaBufNmb][5] >> 4) & 0x0003);                                      //!< Switch left
+  rc_ctrl.rc.s[1] = ((sbus_rx_buf[DmaBufNmb][5] >> 4) & 0x000C) >> 2;                                 //!< Switch right
+  rc_ctrl.mouse.y = -(sbus_rx_buf[DmaBufNmb][6] | (sbus_rx_buf[DmaBufNmb][7] << 8));                  //!< Mouse X axis
+  rc_ctrl.mouse.x = -(sbus_rx_buf[DmaBufNmb][8] | (sbus_rx_buf[DmaBufNmb][9] << 8));                  //!< Mouse Y axis
+  rc_ctrl.mouse.z = sbus_rx_buf[DmaBufNmb][10] | (sbus_rx_buf[DmaBufNmb][11] << 8);                   //!< Mouse Z axis
+  rc_ctrl.mouse.press_l = sbus_rx_buf[DmaBufNmb][12];                                 //!< Mouse Left Is Press ?
+  rc_ctrl.mouse.press_r = sbus_rx_buf[DmaBufNmb][13];                                 //!< Mouse Right Is Press ?
+  rc_ctrl.key.v = sbus_rx_buf[DmaBufNmb][14] | (sbus_rx_buf[DmaBufNmb][15] << 8);     //!< KeyBoard value
+  rc_ctrl.rc.ch[4] = sbus_rx_buf[DmaBufNmb][16] | (sbus_rx_buf[DmaBufNmb][17] << 8);  // NULL
+
+  rc_ctrl.rc.ch[0] -= RC_CH_VALUE_OFFSET;
+  rc_ctrl.rc.ch[1] -= RC_CH_VALUE_OFFSET;
+  rc_ctrl.rc.ch[2] -= RC_CH_VALUE_OFFSET;
+  rc_ctrl.rc.ch[3] -= RC_CH_VALUE_OFFSET;
+  rc_ctrl.rc.ch[4] -= RC_CH_VALUE_OFFSET;
+
+  KeyJumpChannal = (rc_ctrl.key.v ^ KeyFormerChannal);
 }
 
-//ÅÐ¶ÏÒ£¿ØÆ÷Êý¾ÝÊÇ·ñ³ö´í£¬
-uint8_t RC_data_is_error(void)
-{
-    //½ûÖ¹Ê¹ÓÃgo toÓï¾ä£¡£¡£¡£¡£¡£¡
-    if (RC_abs(rc_ctrl.rc.ch[0]) > RC_CHANNAL_ERROR_VALUE)
-    {
-        memset(&rc_ctrl, 0, sizeof(rc_ctrl));
-        return 1;
-    }
-    if (RC_abs(rc_ctrl.rc.ch[1]) > RC_CHANNAL_ERROR_VALUE)
-    {
-        memset(&rc_ctrl, 0, sizeof(rc_ctrl));
-        return 1;
-    }
-    if (RC_abs(rc_ctrl.rc.ch[2]) > RC_CHANNAL_ERROR_VALUE)
-    {
-        memset(&rc_ctrl, 0, sizeof(rc_ctrl));
-        return 1;
-    }
-    if (RC_abs(rc_ctrl.rc.ch[3]) > RC_CHANNAL_ERROR_VALUE)
-    {
-        memset(&rc_ctrl, 0, sizeof(rc_ctrl));
-        return 1;
-    }
-    if (rc_ctrl.rc.s[0] == 0)
-    {
-        memset(&rc_ctrl, 0, sizeof(rc_ctrl));
-        return 1;
-    }
-    if (rc_ctrl.rc.s[1] == 0)
-    {
-        memset(&rc_ctrl, 0, sizeof(rc_ctrl));
-        return 1;
+// ï¿½ï¿½ï¿½ï¿½Ó¦ï¿½Ã¹ï¿½ï¿½ï¿½
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Íµã°´ï¿½ï¿½ï¿½ï¿½ï¿½Ä¹ï¿½ï¿½ï¿½ï¿½ï¿½
+// ï¿½ï¿½ï¿½ï¿½ Wï¿½ï¿½Aï¿½ï¿½Sï¿½ï¿½Dï¿½ï¿½SHIFTï¿½ï¿½CTRLï¿½ï¿½F Îªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¹ï¿½ï¿½ï¿½ï¿½ï¿½
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½ã°´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½Öµï¿½ï¿½ï¿½
+
+bool_t CheakKeyPress(uint16_t Key) {
+  if ((rc_ctrl.key.v & Key) == 0) return 0;
+
+  return 1;
+}
+
+bool_t CheakKeyPressOnce(uint16_t Key) {
+  if ((rc_ctrl.key.v & Key) == 0) {
+    KeyUsed &= (~Key);
+    return 0;
+  }
+
+  if ((KeyJumpChannal & Key) == 0) {
+    return 0;
+  } else {
+    if ((KeyUsed & Key) == 0) {
+      KeyUsed |= Key;
+      return 1;
     }
     return 0;
-
+  }
 }
 
-void slove_RC_lost(void)
-{
-    usart3_rx_dma_restart(SBUS_RX_BUF_NUM);
-}
-void slove_data_error(void)
-{
-    usart3_rx_dma_restart(SBUS_RX_BUF_NUM);
-}
+// ï¿½ï¿½Ò»ï¿½ï¿½Ò¡ï¿½ï¿½Öµ
+fp32 RemoteChannalRightX() { return (rc_ctrl.rc.ch[1] / 660.0f); }
+fp32 RemoteChannalRightY() { return (-rc_ctrl.rc.ch[0] / 660.0f); }
+fp32 RemoteChannalLeftX() { return (rc_ctrl.rc.ch[3] / 660.0f); }
+fp32 RemoteChannalLeftY() { return (-rc_ctrl.rc.ch[2] / 660.0f); }
+fp32 RemoteDial() { return (rc_ctrl.rc.ch[4] / 660.0f); }
 
+// ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ¶ï¿½
+fp32 MouseMoveX() { return (rc_ctrl.mouse.x / 32768.0f); }
+fp32 MouseMoveY() { return (rc_ctrl.mouse.y / 32768.0f); }
 
-//È¡Õýº¯Êý
-static int16_t RC_abs(int16_t value)
-{
-    if (value > 0)
-    {
-        return value;
-    }
-    else
-    {
-        return -value;
-    }
-}
-/**
-  * @brief          remote control protocol resolution
-  * @param[in]      sbus_buf: raw data point
-  * @param[out]     rc_ctrl: remote control data struct point
-  * @retval         none
-  */
-/**
-  * @brief          Ò£¿ØÆ÷Ð­Òé½âÎö
-  * @param[in]      sbus_buf: Ô­ÉúÊý¾ÝÖ¸Õë
-  * @param[out]     rc_ctrl: Ò£¿ØÆ÷Êý¾ÝÖ¸
-  * @retval         none
-  */
-void sbus_to_rc(uint8_t DmaBufNmb)
-{
-    KeyFormerChannal = rc_ctrl.key.v;
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò¼ï¿½
+bool_t MousePressLeft() { return rc_ctrl.mouse.press_l; }
+bool_t MousePressRight() { return rc_ctrl.mouse.press_r; }
 
-    rc_ctrl.rc.ch[0] = (sbus_rx_buf[DmaBufNmb][0] | (sbus_rx_buf[DmaBufNmb][1] << 8)) & 0x07ff;         //!< Channel 0
-    rc_ctrl.rc.ch[1] = ((sbus_rx_buf[DmaBufNmb][1] >> 3) | (sbus_rx_buf[DmaBufNmb][2] << 5)) & 0x07ff;  //!< Channel 1
-    rc_ctrl.rc.ch[2] = ((sbus_rx_buf[DmaBufNmb][2] >> 6) | (sbus_rx_buf[DmaBufNmb][3] << 2) |           //!< Channel 2
-                         (sbus_rx_buf[DmaBufNmb][4] << 10)) &0x07ff;
-    rc_ctrl.rc.ch[3] = ((sbus_rx_buf[DmaBufNmb][4] >> 1) | (sbus_rx_buf[DmaBufNmb][5] << 7)) & 0x07ff;  //!< Channel 3
-    rc_ctrl.rc.s[0] = ((sbus_rx_buf[DmaBufNmb][5] >> 4) & 0x0003);                                      //!< Switch left
-    rc_ctrl.rc.s[1] = ((sbus_rx_buf[DmaBufNmb][5] >> 4) & 0x000C) >> 2;                                 //!< Switch right
-    rc_ctrl.mouse.y = -(sbus_rx_buf[DmaBufNmb][6] | (sbus_rx_buf[DmaBufNmb][7] << 8));                     //!< Mouse X axis
-    rc_ctrl.mouse.x = -(sbus_rx_buf[DmaBufNmb][8] | (sbus_rx_buf[DmaBufNmb][9] << 8));                     //!< Mouse Y axis
-    rc_ctrl.mouse.z = sbus_rx_buf[DmaBufNmb][10] | (sbus_rx_buf[DmaBufNmb][11] << 8);                   //!< Mouse Z axis
-    rc_ctrl.mouse.press_l = sbus_rx_buf[DmaBufNmb][12];                                                 //!< Mouse Left Is Press ?
-    rc_ctrl.mouse.press_r = sbus_rx_buf[DmaBufNmb][13];                                                 //!< Mouse Right Is Press ?
-    rc_ctrl.key.v = sbus_rx_buf[DmaBufNmb][14] | (sbus_rx_buf[DmaBufNmb][15] << 8);                     //!< KeyBoard value
-    rc_ctrl.rc.ch[4] = sbus_rx_buf[DmaBufNmb][16] | (sbus_rx_buf[DmaBufNmb][17] << 8);                  //NULL
-
-    rc_ctrl.rc.ch[0] -= RC_CH_VALUE_OFFSET;
-    rc_ctrl.rc.ch[1] -= RC_CH_VALUE_OFFSET;
-    rc_ctrl.rc.ch[2] -= RC_CH_VALUE_OFFSET;
-    rc_ctrl.rc.ch[3] -= RC_CH_VALUE_OFFSET;
-    rc_ctrl.rc.ch[4] -= RC_CH_VALUE_OFFSET;
-    
-    KeyJumpChannal = (rc_ctrl.key.v ^ KeyFormerChannal);
-}    
-
-
-
-
-
-//¼üÅÌÓ¦ÓÃ¹¦ÄÜ
-//¼üÅÌÇøÓò·ÖÎª³¤°´´¥·¢µÄ¹¦ÄÜÇøºÍµã°´´¥·¢µÄ¹¦ÄÜÇø
-//ÆäÖÐ W¡¢A¡¢S¡¢D¡¢SHIFT¡¢CTRL¡¢F Îª³¤°´´¥·¢µÄ¹¦ÄÜÇø
-//ÆäËû°´¼üÎªµã°´¹¦ÄÜÇø
-
-//³¤°´´¥·¢ÇøÓòµÄ¼üÖµ¼ì²â
-
-bool_t CheakKeyPress(uint16_t Key)
-{
-    if ((rc_ctrl.key.v & Key) == 0)
-        return 0;
-    
-    return 1;
-}
-
-
-
-bool_t CheakKeyPressOnce(uint16_t Key)
-{
-    if ((rc_ctrl.key.v & Key) == 0) {
-        KeyUsed &= (~Key);
-        return 0;
-    }
-
-    if ((KeyJumpChannal & Key) == 0){
-        return 0;
-    }
-    else{
-        if ((KeyUsed & Key) == 0) {
-            KeyUsed |= Key;
-            return 1;
-        } 
-        return 0;
-    }
-}
-
-
-// ¹éÒ»»¯Ò¡¸ËÖµ
-fp32 RemoteChannalRightX()
-{
-    return (rc_ctrl.rc.ch[1] / 660.0f);
-}
-fp32 RemoteChannalRightY()
-{
-    return (-rc_ctrl.rc.ch[0] / 660.0f);
-}
-fp32 RemoteChannalLeftX()
-{
-    return (rc_ctrl.rc.ch[3] / 660.0f);
-}
-fp32 RemoteChannalLeftY()
-{
-    return (-rc_ctrl.rc.ch[2] / 660.0f);
-}
-fp32 RemoteDial()
-{
-    return (rc_ctrl.rc.ch[4] / 660.0f);
-}
-
-// ¹éÒ»»¯Êó±êÒÆ¶¯
-fp32 MouseMoveX()
-{
-    return (rc_ctrl.mouse.x / 32768.0f);
-}
-fp32 MouseMoveY()
-{
-    return (rc_ctrl.mouse.y / 32768.0f);
-}
-
-// Êó±ê×óÓÒ¼ü
-bool_t MousePressLeft()
-{
-    return rc_ctrl.mouse.press_l;
-}
-bool_t MousePressRight()
-{
-    return rc_ctrl.mouse.press_r;
-}
-
-// ²¦¸ËÎ»ÖÃ¼ì²â
-bool_t SwitchRightUpSide()
-{
-    return (rc_ctrl.rc.s[0] == RC_SW_UP);
-}
-bool_t SwitchRightMidSide()
-{
-    return (rc_ctrl.rc.s[0] == RC_SW_MID);
-}
-bool_t SwitchRightDownSide()
-{
-    return (rc_ctrl.rc.s[0] == RC_SW_DOWN);
-}
-bool_t SwitchLeftUpSide()
-{
-    return (rc_ctrl.rc.s[1] == RC_SW_UP);
-}
-bool_t SwitchLeftMidSide()
-{
-    return (rc_ctrl.rc.s[1] == RC_SW_MID);
-}
-bool_t SwitchLeftDownSide()
-{
-    return (rc_ctrl.rc.s[1] == RC_SW_DOWN);
-}
+// ï¿½ï¿½ï¿½ï¿½Î»ï¿½Ã¼ï¿½ï¿½
+bool_t SwitchRightUpSide() { return (rc_ctrl.rc.s[0] == RC_SW_UP); }
+bool_t SwitchRightMidSide() { return (rc_ctrl.rc.s[0] == RC_SW_MID); }
+bool_t SwitchRightDownSide() { return (rc_ctrl.rc.s[0] == RC_SW_DOWN); }
+bool_t SwitchLeftUpSide() { return (rc_ctrl.rc.s[1] == RC_SW_UP); }
+bool_t SwitchLeftMidSide() { return (rc_ctrl.rc.s[1] == RC_SW_MID); }
+bool_t SwitchLeftDownSide() { return (rc_ctrl.rc.s[1] == RC_SW_DOWN); }
 
 fp32 NormalizedLimit(fp32 input) {
-    if (input > 1.0f) {
-        input = 1.0f;
-    }
-    else if (input < -1.0f) {
-        input = -1.0f;
-    }
-    return input;
+  if (input > 1.0f) {
+    input = 1.0f;
+  } else if (input < -1.0f) {
+    input = -1.0f;
+  }
+  return input;
 }
-

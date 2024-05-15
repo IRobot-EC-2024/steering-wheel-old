@@ -2,74 +2,69 @@
 #define _INFANTRY4_KEY_MAP_
 
 #include "Remote.h"
-#define YAW_REMOTE_SENS                         0.25f
-#define PITCH_REMOTE_SENS                       0.25f
-#define YAW_MOUSE_SENS                          10
-#define PITCH_MOUSE_SENS                        30
+#define YAW_REMOTE_SENS 0.25f
+#define PITCH_REMOTE_SENS 0.25f
+#define YAW_MOUSE_SENS 10
+#define PITCH_MOUSE_SENS 30
 
-// ×´Ì¬»úÉèÖÃ
-// ÔÆÌ¨ÎÞÁ¦
-//#define GIMBAL_WEAK_KEYMAP              SwitchRightDownSide()
-// ÔÆÌ¨Ê¹ÄÜ
-#define GIMBAL_ENABLE_KEYMAP            SwitchRightMidSide() || SwitchRightUpSide()
-// ·¢Éä»ú¹¹Ê¹ÄÜ
-#define SHOOTER_ENABLE_KEYMAP           SwitchRightUpSide()
-// µ×ÅÌÊ¹ÄÜ
-#define CHASSIS_ENABLE_KEYMAP           SwitchLeftDownSide()
+// ×´Ì¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+// ï¿½ï¿½Ì¨ï¿½ï¿½ï¿½ï¿½
+// #define GIMBAL_WEAK_KEYMAP              SwitchRightDownSide()
+// ï¿½ï¿½Ì¨Ê¹ï¿½ï¿½
+#define GIMBAL_ENABLE_KEYMAP SwitchRightMidSide() || SwitchRightUpSide()
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¹ï¿½ï¿½
+#define SHOOTER_ENABLE_KEYMAP SwitchRightUpSide()
+// ï¿½ï¿½ï¿½ï¿½Ê¹ï¿½ï¿½
+#define CHASSIS_ENABLE_KEYMAP SwitchLeftDownSide()
 
-// ÔÆÌ¨ÔË¶¯¿ØÖÆÖ¸Áî
+// ï¿½ï¿½Ì¨ï¿½Ë¶ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½
 // YAW
-#define GIMBAL_CMD_YAW_KEYMAP           NormalizedLimit(MouseMoveY()*YAW_MOUSE_SENS + RemoteChannalLeftY()*YAW_REMOTE_SENS)
+#define GIMBAL_CMD_YAW_KEYMAP NormalizedLimit(MouseMoveY() * YAW_MOUSE_SENS + RemoteChannalLeftY() * YAW_REMOTE_SENS)
 // PITCH
-#define GIMBAL_CMD_PITCH_KEYMAP         NormalizedLimit(MouseMoveX()*PITCH_MOUSE_SENS + RemoteChannalLeftX()*PITCH_REMOTE_SENS)
+#define GIMBAL_CMD_PITCH_KEYMAP \
+  NormalizedLimit(MouseMoveX() * PITCH_MOUSE_SENS + RemoteChannalLeftX() * PITCH_REMOTE_SENS)
 
-// µ×ÅÌÔË¶¯¿ØÖÆÖ¸Áî
-// Ç°ºó
-#define CHASSIS_CMD_X_KEYMAP            NormalizedLimit((RemoteChannalRightX() - CheakKeyPress(KEY_PRESSED_OFFSET_S) + CheakKeyPress(KEY_PRESSED_OFFSET_W)))
-// ×óÓÒ
-#define CHASSIS_CMD_Y_KEYMAP            NormalizedLimit((RemoteChannalRightY() - CheakKeyPress(KEY_PRESSED_OFFSET_D) + CheakKeyPress(KEY_PRESSED_OFFSET_A)))
-// ¸ßËÙ
-#define CHASSIS_HIGH_SPEED_KEYMAP       CheakKeyPress(KEY_PRESSED_OFFSET_C) 
-// ²»¶¯
-#define CHASSIS_STOP_KEYMAP             CheakKeyPressOnce(KEY_PRESSED_OFFSET_V)
-//¸ßËÙÐ¡ÍÓÂÝ
-#define CHASSIS_HIGH_SPEED_ROTATE       CheakKeyPress(KEY_PRESSED_OFFSET_CTRL)
+// ï¿½ï¿½ï¿½ï¿½ï¿½Ë¶ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½
+// Ç°ï¿½ï¿½
+#define CHASSIS_CMD_X_KEYMAP \
+  NormalizedLimit((RemoteChannalRightX() - CheakKeyPress(KEY_PRESSED_OFFSET_S) + CheakKeyPress(KEY_PRESSED_OFFSET_W)))
+// ï¿½ï¿½ï¿½ï¿½
+#define CHASSIS_CMD_Y_KEYMAP \
+  NormalizedLimit((RemoteChannalRightY() - CheakKeyPress(KEY_PRESSED_OFFSET_D) + CheakKeyPress(KEY_PRESSED_OFFSET_A)))
+// ï¿½ï¿½ï¿½ï¿½
+#define CHASSIS_HIGH_SPEED_KEYMAP CheakKeyPress(KEY_PRESSED_OFFSET_C)
+// ï¿½ï¿½ï¿½ï¿½
+#define CHASSIS_STOP_KEYMAP CheakKeyPressOnce(KEY_PRESSED_OFFSET_V)
+// ï¿½ï¿½ï¿½ï¿½Ð¡ï¿½ï¿½ï¿½ï¿½
+#define CHASSIS_HIGH_SPEED_ROTATE CheakKeyPress(KEY_PRESSED_OFFSET_CTRL)
 
-// ³¬¼¶µçÈÝ¿ª¹Ø
-#define SUPER_CAP_SWITCH_KEYMAP         CheakKeyPress(KEY_PRESSED_OFFSET_C)  || (RemoteDial() == 1.0f)
-// Ð¡ÍÓÂÝ
-#define CHASSIS_ROTATE_SWITCH_KEYMAP    CheakKeyPress(KEY_PRESSED_OFFSET_SHIFT) || CheakKeyPress(KEY_PRESSED_OFFSET_CTRL) || (RemoteDial() == -1.0f)
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý¿ï¿½ï¿½ï¿½
+#define SUPER_CAP_SWITCH_KEYMAP CheakKeyPress(KEY_PRESSED_OFFSET_C) || (RemoteDial() == 1.0f)
+// Ð¡ï¿½ï¿½ï¿½ï¿½
+#define CHASSIS_ROTATE_SWITCH_KEYMAP \
+  CheakKeyPress(KEY_PRESSED_OFFSET_SHIFT) || CheakKeyPress(KEY_PRESSED_OFFSET_CTRL) || (RemoteDial() == -1.0f)
 
+// ï¿½ò¿ªµï¿½ï¿½Õ¸ï¿½
+#define COVER_SWITCH_KEYMAP CheakKeyPressOnce(KEY_PRESSED_OFFSET_R)
 
-//´ò¿ªµ¯²Õ¸Ç
-#define COVER_SWITCH_KEYMAP             CheakKeyPressOnce(KEY_PRESSED_OFFSET_R)
+// ï¿½ï¿½ï¿½ï¿½pitchï¿½ï¿½ï¿½ï¿½
+#define AIMBOT_PITCH_BIAS_LOW_KEYMAP (CheakKeyPress(KEY_PRESSED_OFFSET_CTRL) && CheakKeyPressOnce(KEY_PRESSED_OFFSET_C))
+#define AIMBOT_PITCH_BIAS_HIGH_KEYMAP \
+  (CheakKeyPress(KEY_PRESSED_OFFSET_CTRL) && CheakKeyPressOnce(KEY_PRESSED_OFFSET_V))
+#define AIMBOT_PITCH_BIAS_ZERO_KEYMAP \
+  (CheakKeyPress(KEY_PRESSED_OFFSET_CTRL) && CheakKeyPressOnce(KEY_PRESSED_OFFSET_Z))
 
+// ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½
+#define SHOOT_COMMAND_KEYMAP ((RemoteDial() == 1.0f) || (MousePressLeft()))
+// ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½
+#define AIMBOT_COMMAND_KEYMAP (SwitchLeftUpSide() || MousePressRight())
+// ï¿½ï¿½ï¿½Ä£Ê½ï¿½ï¿½ï¿½Ö¶ï¿½/ï¿½Ô¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+#define FIRE_MODE_KEYMAP CheakKeyPressOnce(KEY_PRESSED_OFFSET_Q)
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ó£¨´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä£Ê½ï¿½ï¿½
+#define SINGLE_SHOOT_KEMAP CheakKeyPressOnce(KEY_PRESSED_OFFSET_E)
 
-// ×ÔÃépitch²¹³¥
-#define AIMBOT_PITCH_BIAS_LOW_KEYMAP	(CheakKeyPress(KEY_PRESSED_OFFSET_CTRL) && CheakKeyPressOnce(KEY_PRESSED_OFFSET_C))
-#define AIMBOT_PITCH_BIAS_HIGH_KEYMAP	(CheakKeyPress(KEY_PRESSED_OFFSET_CTRL) && CheakKeyPressOnce(KEY_PRESSED_OFFSET_V))
-#define AIMBOT_PITCH_BIAS_ZERO_KEYMAP	(CheakKeyPress(KEY_PRESSED_OFFSET_CTRL) && CheakKeyPressOnce(KEY_PRESSED_OFFSET_Z))
+#define BIG_RUNE_KEYMAP CheakKeyPressOnce(KEY_PRESSED_OFFSET_G)
 
-
-
-
-    
-// ·¢µ¯Ö¸Áî
-#define SHOOT_COMMAND_KEYMAP            ((RemoteDial() == 1.0f) || (MousePressLeft()))
-// ×ÔÃéÖ¸Áî
-#define AIMBOT_COMMAND_KEYMAP           (SwitchLeftUpSide() || MousePressRight())
-// ´ò»÷Ä£Ê½£¨ÊÖ¶¯/×Ô¶¯·¢µ¯£©
-#define FIRE_MODE_KEYMAP                CheakKeyPressOnce(KEY_PRESSED_OFFSET_Q)
-// ÌØÊâ×ÔÃéÈÎÎñÇëÇó£¨´ò·û¼´µ¥·¢Ä£Ê½£©
-#define SINGLE_SHOOT_KEMAP              CheakKeyPressOnce(KEY_PRESSED_OFFSET_E)
-
-#define BIG_RUNE_KEYMAP                 CheakKeyPressOnce(KEY_PRESSED_OFFSET_G)
-
-#define SMALL_RUNE_KEYMAP				CheakKeyPressOnce(KEY_PRESSED_OFFSET_B)
-
-
-
-
-
+#define SMALL_RUNE_KEYMAP CheakKeyPressOnce(KEY_PRESSED_OFFSET_B)
 
 #endif

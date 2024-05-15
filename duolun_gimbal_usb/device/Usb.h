@@ -4,7 +4,8 @@
  * @LastEditors: BletillaQi 1370670703@qq.com
  * @LastEditTime: 2024-03-14 13:59:28
  * @FilePath: \MDK-ARMe:\study\robot\auto_shaobing\Double_Head_Dragon\Gimbal_Mid\Device\Usb.h
- * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置:
+ * https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
 #ifndef USB_H
 #define USB_H
@@ -33,6 +34,6 @@ extern void UsbSendMessage(uint8_t* address, uint16_t len, uint8_t id);
  * @brief          获取usb自瞄指针
  * @retval         none
  */
-extern const AimbotFrame_SCM_t *get_usb_aimbot_command_point(void);
+extern const AimbotFrame_SCM_t* get_usb_aimbot_command_point(void);
 
 #endif

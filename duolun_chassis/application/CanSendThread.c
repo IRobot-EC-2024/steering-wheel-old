@@ -1,21 +1,20 @@
 /*
-* уБ╦ЖхннЯсцсзоРтфл╗╥╒кмпео╒
-* ╠╬хннЯ╢╕сзвН╦ъсеох╪╤ё╛йгй╣й╠пт╣д
-* нйлБё╨д©г╟╥╒кмпео╒╥етзжп╤оюОё╛╩А╣╪жбFIFOгЬЁебЗё╛╢с╤Ь╥╒кмй╖╟э
-* ╫Б╬Жк╪б╥ё╨╫╗а╒а╫╦ЖFIFO╩╨╢ФгЬё╛╥ж╠П╤тс╕╦ъ╣мсеох╪╤ё╛╦ъсеох╪╤╣дйЩ╬щхШ╫Ь╦ъсеох╪╤FIFOё╩
-*			ц©╢нсеох╥╒кмж╠╣╫╦ъсеох╪╤╣дFIFOё╛ж╠жафД╥╒кммЙ╠о╡е╥╒км╣мсеох╪╤FIFO
-* й╣ож╡©╥жё╨╣╠йЩ╬щFIFOЁЖож╢МнСй╠ё╛й╣ожаа╣фё╛╣╚йг╡╩дэ╪Л╡Бйг╥ЯЁи╧╕╥╒км
-* пч╦дё╨1.╫ЬппйЩ╬щм╛╡╫ё╛пХр╙в╒рБ╣дйгё╛р╩╧╡спа╫╦ЖFIFO╩╨╢ФгЬё╛рт╪╟р╩╦Ж╡цепо╣мЁйЩ╬щ╩╨╢ФгЬ║ё
-*			д©г╟к╪б╥н╙╫сйуFIFOйгр╩ж╠тз╫сйЩ╣дё╛╣╠╫сйухннЯткппй╠ё╛╫сйуFIFOгЕ©уё╛м╛й╠╫╚йЩ╬щ╢ФхК╥╒кмFIFO║╒
-*			рт╪╟╡цепо╣мЁйЩ╬щ╩╨╢ФгЬё╛╢кй╠╫сйухннЯ╧рфПё╛╥╒кмхннЯткпп║ё╥╒кмFIFOгЕ©уй╠ё╛╥╒кмхннЯ╧рфПё╛╫сйухннЯткпп║ё
-*			жп╪Д╫сйуFIFOй╪жутзткппё╛©и╤тйЩ╬щвН╢С╩╞юШсц║ё
-*/
+ * О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫л╗О©╫О©╫О©╫О©╫О©╫О©╫о╒
+ * О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫х╪О©╫О©╫О©╫О©╫О©╫й╣й╠О©╫т╣О©╫
+ * О©╫О©╫О©╫Бё╨д©г╟О©╫О©╫О©╫О©╫О©╫О©╫о╒О©╫О©╫О©╫О©╫О©╫п╤О©╫О©╫Оё╛О©╫А╣╪О©╫О©╫FIFOО©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫с╤О©╫О©╫О©╫О©╫О©╫й╖О©╫О©╫
+ * О©╫О©╫О©╫к╪б╥О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫FIFOО©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫ж╠О©╫О©╫с╕О©╫ъ╣О©╫О©╫О©╫О©╫х╪О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫х╪О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫х╪О©╫FIFOО©╫О©╫
+ *			ц©О©╫О©╫О©╫О©╫О©╫х╥О©╫О©╫О©╫ж╠О©╫О©╫О©╫О©╫О©╫О©╫О©╫х╪О©╫О©╫О©╫FIFOО©╫О©╫ж╠О©╫О©╫О©╫Д╥╒О©╫О©╫О©╫О©╫о╡е╥О©╫О©╫м╣О©╫О©╫О©╫О©╫х╪О©╫FIFO
+ * й╣О©╫ж╡О©╫О©╫жёО©╫О©╫О©╫О©╫О©╫О©╫О©╫FIFOО©╫О©╫О©╫ж╢О©╫О©╫О©╫й╠О©╫О©╫й╣О©╫О©╫О©╫О©╫О©╫фёО©╫О©╫О©╫О©╫г╡О©╫О©╫э╪О©╫О©╫О©╫г╥О©╫и╧О©╫О©╫О©╫О©╫О©╫
+ * О©╫ч╦дёО©╫1.О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫м╛О©╫О©╫О©╫О©╫О©╫О©╫р╙в╒О©╫О©╫О©╫О©╫гёО©╫р╩О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫FIFOО©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫т╪О©╫р╩О©╫О©╫О©╫О©╫О©╫О©╫о╣мЁО©╫О©╫О©╫щ╩О©╫О©╫О©╫О©╫О©╫О©╫О©╫
+ *			д©г╟к╪б╥н╙О©╫О©╫О©╫О©╫FIFOО©╫О©╫р╩ж╠О©╫з╫О©╫О©╫О©╫О©╫дёО©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫й╠О©╫О©╫О©╫О©╫О©╫О©╫FIFOО©╫О©╫уёО©╫м╛й╠О©╫О©╫О©╫О©╫О©╫щ╢О©╫О©╫К╥╒О©╫О©╫FIFOО©╫О©╫
+ *			О©╫т╪О©╫О©╫О©╫О©╫О©╫о╣мЁО©╫О©╫О©╫щ╩О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫й╠О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫Пё╛╥О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫п║О©╫О©╫О©╫О©╫О©╫FIFOО©╫О©╫О©╫й╠О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫Пё╛╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫п║О©╫
+ *			О©╫п╪О©╫О©╫О©╫О©╫FIFOй╪О©╫О©╫О©╫О©╫О©╫О©╫О©╫пёО©╫О©╫и╤О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫ц║О©╫
+ */
 #include "cmsis_os.h"
 #include "CanSendThread.h"
 #include "tim.h"
 #include "can.h"
 #include "RefereeBehaviour.h"
-
 
 uint8_t DataBuffer[11];
 extern osThreadId CanSendHandle;
@@ -23,45 +22,38 @@ extern osThreadId RefereeHandle;
 
 static CAN_TxHeaderTypeDef can_tx_message;
 
-static void Can_Send(CAN_HandleTypeDef *hcan,uint32_t id,uint8_t lenth,uint8_t *buffer);
-void CanSendTask(void const * argument)
-{
-	uint8_t SendLenth;
-	uint32_t SendId;
-	while(1)
-	{
-		if(Pop(SendBuffer,(SendBuffer+1),DataBuffer) == 1)
-		{
-			SendId = (uint32_t)(DataBuffer[0]<<8|DataBuffer[1]);
+static void Can_Send(CAN_HandleTypeDef *hcan, uint32_t id, uint8_t lenth, uint8_t *buffer);
+void CanSendTask(void const *argument) {
+  uint8_t SendLenth;
+  uint32_t SendId;
+  while (1) {
+    if (Pop(SendBuffer, (SendBuffer + 1), DataBuffer) == 1) {
+      SendId = (uint32_t)(DataBuffer[0] << 8 | DataBuffer[1]);
 
-			SendLenth = DataBuffer[2];
+      SendLenth = DataBuffer[2];
 
-			Can_Send(&hcan1,SendId,SendLenth,&DataBuffer[3]);
-		}
+      Can_Send(&hcan1, SendId, SendLenth, &DataBuffer[3]);
+    }
 
-		osDelay(1);
-	}
+    osDelay(1);
+  }
 }
 
-static void Can_Send(CAN_HandleTypeDef *hcan,uint32_t id,uint8_t lenth,uint8_t *buffer)
-{
-	uint32_t send_mail_box;
-    can_tx_message.StdId = id;
-    can_tx_message.IDE = CAN_ID_STD;
-    can_tx_message.RTR = CAN_RTR_DATA;
-    can_tx_message.DLC = lenth;
-	
-    HAL_CAN_AddTxMessage(hcan, &can_tx_message, buffer, &send_mail_box);
+static void Can_Send(CAN_HandleTypeDef *hcan, uint32_t id, uint8_t lenth, uint8_t *buffer) {
+  uint32_t send_mail_box;
+  can_tx_message.StdId = id;
+  can_tx_message.IDE = CAN_ID_STD;
+  can_tx_message.RTR = CAN_RTR_DATA;
+  can_tx_message.DLC = lenth;
+
+  HAL_CAN_AddTxMessage(hcan, &can_tx_message, buffer, &send_mail_box);
 }
 
 uint32_t CMSCounter = 0;
-void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
-{
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
   if (htim->Instance == TIM7) {
     HAL_IncTick();
-  }
-  else if (htim->Instance == TIM3) {
+  } else if (htim->Instance == TIM3) {
     CMSCounter++;
   }
-  
 }
