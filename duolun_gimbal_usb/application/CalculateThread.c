@@ -610,11 +610,6 @@ void GetGimbalRequestState(GimbalRequestState_t *RequestState) {
   if (single_shoot_flag == 1 /*(Remote.mouse.press_r == PRESS)  ||  (Remote.rc.s[1] == RC_SW_UP)*/) {
     RequestState->GimbalState |= (uint8_t)(1 << 1);
   }
-  if (cover_flag == 2) {
-    RequestState->GimbalState |= (uint8_t)(1 << 3);
-  } else if (cover_flag == 1) {
-    RequestState->GimbalState |= (uint8_t)(1 << 4);
-  }
 
   if (auto_fire_flag == 1) {
     RequestState->GimbalState |= (uint8_t)(1 << 6);
