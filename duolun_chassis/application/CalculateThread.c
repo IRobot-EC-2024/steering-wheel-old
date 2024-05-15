@@ -49,6 +49,7 @@ float power_scale;
 // 未开电容时的速度增益系数，开电容时的速度增益系数，最大功率
 fp32 v_gain = 0, cap_gain = 1, Power_Max = 45.0f;
 // 不同功率限制情况下的速度增益系数，在RefereeInfUpdate函数中查表更新到v_gain和cap_gain变量中
+// 45w 50w 55w 60w 65w 70w 75w 80w 85w 90w 95w 100w 120w 130w 140w 150w 160w 170w 180w 190w 200w 默认值
 fp32 v_gain_table[22] = {0.91f, 0.95f, 0.99f, 1.02f, 1.06f, 1.12f, 1.16f, 1.25f, 1.27f, 1.29f, 1.33f,
                          1.36f, 1.51f, 1.58f, 1.65f, 1.73f, 1.80f, 1.87f, 1.93f, 2.f,   2.1f,  0.85f},
      cap_gain_table[22] = {2.74f, 2.62f, 2.48f, 2.40f, 2.32f, 2.15f, 2.09f, 2.04f, 2.02f, 2.f,  1.9f,
@@ -453,8 +454,7 @@ void CMS__() {
   } else {
     CMS_Data.Mode = NORMAL;
   }
-  if (power_heat_data_t.buffer_energy < 20 || cms_offline_counter > 200)
-  {
+  if (power_heat_data_t.buffer_energy < 20 || cms_offline_counter > 200) {
     CMS_Data.Mode = NORMAL;
   }
   if (power_heat_data_t.buffer_energy > 70) {
@@ -504,21 +504,23 @@ uint8_t chassis_powerloop(Chassis_t *Chassis) {
     Power_Max += 50;
   }
   if (power_flag == 0) {
-    else */
-    if (power_heat_data_t.buffer_energy < 35 && power_heat_data_t.buffer_energy >= 30) {
+    else * / if (power_heat_data_t.buffer_energy < 35 && power_heat_data_t.buffer_energy >= 30) {
       Plimit = 0.6;
       // power_scale = (Power_Max-2) / lijupower;
-    } else if (power_heat_data_t.buffer_energy < 30 && power_heat_data_t.buffer_energy >= 20) {
+    }
+    else if (power_heat_data_t.buffer_energy < 30 && power_heat_data_t.buffer_energy >= 20) {
       Plimit = 0.3;
       // power_scale = (Power_Max-2) / lijupower;
-
-    } else if (power_heat_data_t.buffer_energy < 20 && power_heat_data_t.buffer_energy >= 10 && cms_flag == 0) {
+    }
+    else if (power_heat_data_t.buffer_energy < 20 && power_heat_data_t.buffer_energy >= 10 && cms_flag == 0) {
       Plimit = 0.1;
       // power_scale = (Power_Max-2) / lijupower;
-    } else if (power_heat_data_t.buffer_energy < 10 && power_heat_data_t.buffer_energy >= 0) {
+    }
+    else if (power_heat_data_t.buffer_energy < 10 && power_heat_data_t.buffer_energy >= 0) {
       Plimit = 0.05;
       // power_scale = (Power_Max-2) / lijupower;}
-    } else {
+    }
+    else {
       Plimit = 1;
       // power_scale = 1;
     }
