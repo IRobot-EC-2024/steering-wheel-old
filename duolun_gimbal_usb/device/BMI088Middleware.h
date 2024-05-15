@@ -4,7 +4,7 @@
 #include "struct_typedef.h"
 
 #define BMI088_USE_SPI
-//#define BMI088_USE_IIC
+// #define BMI088_USE_IIC
 
 extern void BMI088_GPIO_init(void);
 extern void BMI088_com_init(void);

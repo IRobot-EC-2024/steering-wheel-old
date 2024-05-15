@@ -3,28 +3,25 @@
 
 extern TIM_HandleTypeDef htim5;
 /**
-  * @brief          aRGB show
-  * @param[in]      aRGB: 0xaaRRGGBB, 'aa' is alpha, 'RR' is red, 'GG' is green, 'BB' is blue
-  * @retval         none
-  */
+ * @brief          aRGB show
+ * @param[in]      aRGB: 0xaaRRGGBB, 'aa' is alpha, 'RR' is red, 'GG' is green, 'BB' is blue
+ * @retval         none
+ */
 /**
-  * @brief          ÏÔÊ¾RGB
-  * @param[in]      aRGB:0xaaRRGGBB,'aa' ÊÇÍ¸Ã÷¶È,'RR'ÊÇºìÉ«,'GG'ÊÇÂÌÉ«,'BB'ÊÇÀ¶É«
-  * @retval         none
-  */
-void aRGB_led_show(uint32_t aRGB)
-{
-    static uint8_t alpha;
-    static uint16_t red,green,blue;
+ * @brief          ï¿½ï¿½Ê¾RGB
+ * @param[in]      aRGB:0xaaRRGGBB,'aa' ï¿½ï¿½Í¸ï¿½ï¿½ï¿½ï¿½,'RR'ï¿½Çºï¿½É«,'GG'ï¿½ï¿½ï¿½ï¿½É«,'BB'ï¿½ï¿½ï¿½ï¿½É«
+ * @retval         none
+ */
+void aRGB_led_show(uint32_t aRGB) {
+  static uint8_t alpha;
+  static uint16_t red, green, blue;
 
-    alpha = (aRGB & 0xFF000000) >> 24;
-    red = ((aRGB & 0x00FF0000) >> 16) * alpha;
-    green = ((aRGB & 0x0000FF00) >> 8) * alpha;
-    blue = ((aRGB & 0x000000FF) >> 0) * alpha;
+  alpha = (aRGB & 0xFF000000) >> 24;
+  red = ((aRGB & 0x00FF0000) >> 16) * alpha;
+  green = ((aRGB & 0x0000FF00) >> 8) * alpha;
+  blue = ((aRGB & 0x000000FF) >> 0) * alpha;
 
-    __HAL_TIM_SetCompare(&htim5, TIM_CHANNEL_1, blue);
-    __HAL_TIM_SetCompare(&htim5, TIM_CHANNEL_2, green);
-    __HAL_TIM_SetCompare(&htim5, TIM_CHANNEL_3, red);
+  __HAL_TIM_SetCompare(&htim5, TIM_CHANNEL_1, blue);
+  __HAL_TIM_SetCompare(&htim5, TIM_CHANNEL_2, green);
+  __HAL_TIM_SetCompare(&htim5, TIM_CHANNEL_3, red);
 }
-
-

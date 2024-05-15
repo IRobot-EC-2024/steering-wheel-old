@@ -1,6 +1,6 @@
 #include "imuEKF.h"
 
-#define sampleFreq	2000.0f	
+#define sampleFreq 2000.0f
 
 KalmanFilter_t g_KF;
 KalmanFilter_t e_KF;
@@ -9,295 +9,228 @@ float eVec[3];
 bool g_KF_initialized = false;
 bool e_KF_initialized = false;
 
-void EKFinit(const float ax, const float ay, const float az)
-{
-		 float Status_Init[3] = {ax, ay, az};
-		
-		 float P_Init[9] =
-		 {
-				 1, 0.1, 0.1,
-				 0.1, 1, 0.1,
-		  	 0.1, 0.1, 1 
-		 };
-//     static float B_Init[2] =
-//     {
-//         0,1
-//     };
-     float F_Init[9] =
-     {
-         1, 0, 0,
-         0, 1, 0,
-         0, 0, 1
-     };
-//     static float Q_Init[4] =
-//     {
-//         0.25*Freq*Freq*Freq*Freq, 0.5*Freq*Freq*Freq,
-//         0.5*Freq*Freq*Freq,        Freq*Freq,  
-//     };
-		 	float H_Init[9] =
-			{
-					1, 0, 0,
-				  0, 1, 0,
-					0, 0, 1
-			};
-			float Q_Init[9] =
-			{
-				1, 0, 0,
-        0, 1, 0,
-        0, 0, 1
-			};
-			float R_Init[9] = 
-			{
-				100000, 0, 0,
-        0, 100000, 0,
-        0, 0, 100000
-			};
-		 
-     // ÉèÖÃ×îÐ¡·½²î
-     float state_min_variance[3] = {0.05, 0.05, 0.05};
+void EKFinit(const float ax, const float ay, const float az) {
+  float Status_Init[3] = {ax, ay, az};
 
-      // ¿ªÆô×Ô¶¯µ÷Õû
-     g_KF.UseAutoAdjustment = 1;
-   
-     // ÆøÑ¹²âµÃ¸ß¶È GPS²âµÃ¸ß¶È ¼ÓËÙ¶È¼Æ²âµÃzÖáÔË¶¯¼ÓËÙ¶È
-     uint8_t measurement_reference[3] = {1, 2, 3};
- 
-     float measurement_degree[3] = {1, 1, 1};   
+  float P_Init[9] = {1, 0.1, 0.1, 0.1, 1, 0.1, 0.1, 0.1, 1};
+  //     static float B_Init[2] =
+  //     {
+  //         0,1
+  //     };
+  float F_Init[9] = {1, 0, 0, 0, 1, 0, 0, 0, 1};
+  //     static float Q_Init[4] =
+  //     {
+  //         0.25*Freq*Freq*Freq*Freq, 0.5*Freq*Freq*Freq,
+  //         0.5*Freq*Freq*Freq,        Freq*Freq,
+  //     };
+  float H_Init[9] = {1, 0, 0, 0, 1, 0, 0, 0, 1};
+  float Q_Init[9] = {1, 0, 0, 0, 1, 0, 0, 0, 1};
+  float R_Init[9] = {100000, 0, 0, 0, 100000, 0, 0, 0, 100000};
 
-		 float mat_R_diagonal_elements[3] = {10000, 10000, 10000};
-		 
-     Kalman_Filter_Init(&g_KF, 3, 0, 3);
- 
-     // ÉèÖÃ¾ØÕóÖµ
-		 memcpy(g_KF.xhatminus_data, Status_Init, sizeof(Status_Init));
-		 memcpy(g_KF.xhat_data, Status_Init, sizeof(Status_Init));
-     memcpy(g_KF.P_data, P_Init, sizeof(P_Init));
-     memcpy(g_KF.F_data, F_Init, sizeof(F_Init));
-     memcpy(g_KF.Q_data, Q_Init, sizeof(Q_Init));
-		 memcpy(g_KF.R_data, R_Init, sizeof(R_Init));
-		 memcpy(g_KF.H_data, H_Init, sizeof(H_Init));
-//		 memcpy(Height_KF.B_data, B_Init, sizeof(B_Init));
-     memcpy(g_KF.MeasurementMap, measurement_reference, sizeof(measurement_reference));
-     memcpy(g_KF.MeasurementDegree, measurement_degree, sizeof(measurement_degree));
-     memcpy(g_KF.MatR_DiagonalElements, mat_R_diagonal_elements, sizeof(mat_R_diagonal_elements));
-     memcpy(g_KF.StateMinVariance, state_min_variance, sizeof(state_min_variance));
+  // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð¡ï¿½ï¿½ï¿½ï¿½
+  float state_min_variance[3] = {0.05, 0.05, 0.05};
+
+  // ï¿½ï¿½ï¿½ï¿½ï¿½Ô¶ï¿½ï¿½ï¿½ï¿½ï¿½
+  g_KF.UseAutoAdjustment = 1;
+
+  // ï¿½ï¿½Ñ¹ï¿½ï¿½Ã¸ß¶ï¿½ GPSï¿½ï¿½Ã¸ß¶ï¿½ ï¿½ï¿½ï¿½Ù¶È¼Æ²ï¿½ï¿½zï¿½ï¿½ï¿½Ë¶ï¿½ï¿½ï¿½ï¿½Ù¶ï¿½
+  uint8_t measurement_reference[3] = {1, 2, 3};
+
+  float measurement_degree[3] = {1, 1, 1};
+
+  float mat_R_diagonal_elements[3] = {10000, 10000, 10000};
+
+  Kalman_Filter_Init(&g_KF, 3, 0, 3);
+
+  // ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ï¿½Öµ
+  memcpy(g_KF.xhatminus_data, Status_Init, sizeof(Status_Init));
+  memcpy(g_KF.xhat_data, Status_Init, sizeof(Status_Init));
+  memcpy(g_KF.P_data, P_Init, sizeof(P_Init));
+  memcpy(g_KF.F_data, F_Init, sizeof(F_Init));
+  memcpy(g_KF.Q_data, Q_Init, sizeof(Q_Init));
+  memcpy(g_KF.R_data, R_Init, sizeof(R_Init));
+  memcpy(g_KF.H_data, H_Init, sizeof(H_Init));
+  //		 memcpy(Height_KF.B_data, B_Init, sizeof(B_Init));
+  memcpy(g_KF.MeasurementMap, measurement_reference, sizeof(measurement_reference));
+  memcpy(g_KF.MeasurementDegree, measurement_degree, sizeof(measurement_degree));
+  memcpy(g_KF.MatR_DiagonalElements, mat_R_diagonal_elements, sizeof(mat_R_diagonal_elements));
+  memcpy(g_KF.StateMinVariance, state_min_variance, sizeof(state_min_variance));
 }
 
 float gvec[3];
-void EKFupdate(float gx, float gy, float gz, float ax, float ay, float az)
-{	
-	
-		// ¿Õ¼ä»»Ê±¼ä ±ÜÃâÖØ¸´ÔËËã
-    float gxdt, gydt, gzdt;
-    gxdt = gx * (1.0f/sampleFreq);
-    gydt = gy * (1.0f/sampleFreq);
-    gzdt = gz * (1.0f/sampleFreq);
+void EKFupdate(float gx, float gy, float gz, float ax, float ay, float az) {
+  // ï¿½Õ¼ä»»Ê±ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ø¸ï¿½ï¿½ï¿½ï¿½ï¿½
+  float gxdt, gydt, gzdt;
+  gxdt = gx * (1.0f / sampleFreq);
+  gydt = gy * (1.0f / sampleFreq);
+  gzdt = gz * (1.0f / sampleFreq);
 
-    // ÓÉÓÚ±¾ÀýÖÐ×´Ì¬×ªÒÆ¾ØÕóÎªÊ±±ä¾ØÕó
-    // ÐèÒªÔÚ¿¨¶ûÂüÂË²¨Æ÷¸üÐÂÇ°¸üÐÂ×ªÒÆ¾ØÕóFµÄÖµ
-    g_KF.F_data[1] = gzdt;
-    g_KF.F_data[2] = -gydt;
+  // ï¿½ï¿½ï¿½Ú±ï¿½ï¿½ï¿½ï¿½ï¿½×´Ì¬×ªï¿½Æ¾ï¿½ï¿½ï¿½ÎªÊ±ï¿½ï¿½ï¿½ï¿½ï¿½
+  // ï¿½ï¿½Òªï¿½Ú¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ë²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç°ï¿½ï¿½ï¿½ï¿½×ªï¿½Æ¾ï¿½ï¿½ï¿½Fï¿½ï¿½Öµ
+  g_KF.F_data[1] = gzdt;
+  g_KF.F_data[2] = -gydt;
 
-    g_KF.F_data[3] = -gzdt;
-    g_KF.F_data[5] = gxdt;
+  g_KF.F_data[3] = -gzdt;
+  g_KF.F_data[5] = gxdt;
 
-    g_KF.F_data[6] = gydt;
-    g_KF.F_data[7] = -gxdt;
+  g_KF.F_data[6] = gydt;
+  g_KF.F_data[7] = -gxdt;
 
-    // ¿¨¶ûÂüÂË²¨Æ÷²âÁ¿Öµ¸üÐÂ
-    // ²»Ò»¶¨Ð´ÔÚÂË²¨Æ÷¸üÐÂº¯ÊýÖ®Ç°£¬Ò²¿ÉÐ´ÔÚÓë´«¸ÐÆ÷Í¨ÐÅµÄ»Øµ÷º¯ÊýÖÐ
-    g_KF.MeasuredVector[0] = ax;
-    g_KF.MeasuredVector[1] = ay;
-    g_KF.MeasuredVector[2] = az;
+  // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ë²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½
+  // ï¿½ï¿½Ò»ï¿½ï¿½Ð´ï¿½ï¿½ï¿½Ë²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Âºï¿½ï¿½ï¿½Ö®Ç°ï¿½ï¿½Ò²ï¿½ï¿½Ð´ï¿½ï¿½ï¿½ë´«ï¿½ï¿½ï¿½ï¿½Í¨ï¿½ÅµÄ»Øµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+  g_KF.MeasuredVector[0] = ax;
+  g_KF.MeasuredVector[1] = ay;
+  g_KF.MeasuredVector[2] = az;
 
-    // ¿¨¶ûÂüÂË²¨Æ÷¸üÐÂº¯Êý
-    Kalman_Filter_Update(&g_KF);
+  // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ë²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Âºï¿½ï¿½ï¿½
+  Kalman_Filter_Update(&g_KF);
 
-    // ÌáÈ¡¹À¼ÆÖµ
-    for (uint8_t i = 0; i < 3; i++)
-    {
-        gVec[i] = g_KF.FilteredValue[i];
-				gvec[i] = g_KF.FilteredValue[i];
-    }
-
+  // ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½Öµ
+  for (uint8_t i = 0; i < 3; i++) {
+    gVec[i] = g_KF.FilteredValue[i];
+    gvec[i] = g_KF.FilteredValue[i];
+  }
 }
 
-void KFinit()
-{
-		
-		 float P_Init[9] =
-		 {
-				 1, 0.1, 0.1,
-				 0.1, 1, 0.1,
-		  	 0.1, 0.1, 1 
-		 };
-//     static float B_Init[2] =
-//     {
-//         0,1
-//     };
-     float F_Init[9] =
-     {
-         1.0f, 0, 0,
-         0, 1.0f, 0,
-         0, 0, 1.0f
-     };
-//     static float Q_Init[4] =
-//     {
-//         0.25*Freq*Freq*Freq*Freq, 0.5*Freq*Freq*Freq,
-//         0.5*Freq*Freq*Freq,        Freq*Freq,  
-//     };
-		 	float H_Init[9] =
-			{
-					1, 0, 0,
-				  0, 1, 0,
-					0, 0, 1
-			};
-			float Q_Init[9] =
-			{
-				1, 0, 0,
-        0, 1, 0,
-        0, 0, 1
-			};
-			float R_Init[9] = 
-			{
-				100000, 0, 0,
-        0, 100000, 0,
-        0, 0, 100000
-			};
-		 
-     // ÉèÖÃ×îÐ¡·½²î
-     float state_min_variance[3] = {0.05, 0.05, 0.05};
-		 
-		 // ¿ªÆô×Ô¶¯µ÷Õû
-     g_KF.UseAutoAdjustment = 1;
-   
-     // 
-     uint8_t measurement_reference[3] = {1, 2, 3};
- 
-     float measurement_degree[3] = {1, 1, 1};   
+void KFinit() {
+  float P_Init[9] = {1, 0.1, 0.1, 0.1, 1, 0.1, 0.1, 0.1, 1};
+  //     static float B_Init[2] =
+  //     {
+  //         0,1
+  //     };
+  float F_Init[9] = {1.0f, 0, 0, 0, 1.0f, 0, 0, 0, 1.0f};
+  //     static float Q_Init[4] =
+  //     {
+  //         0.25*Freq*Freq*Freq*Freq, 0.5*Freq*Freq*Freq,
+  //         0.5*Freq*Freq*Freq,        Freq*Freq,
+  //     };
+  float H_Init[9] = {1, 0, 0, 0, 1, 0, 0, 0, 1};
+  float Q_Init[9] = {1, 0, 0, 0, 1, 0, 0, 0, 1};
+  float R_Init[9] = {100000, 0, 0, 0, 100000, 0, 0, 0, 100000};
 
-		 float mat_R_diagonal_elements[3] = {100000, 100000, 100000};
+  // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð¡ï¿½ï¿½ï¿½ï¿½
+  float state_min_variance[3] = {0.05, 0.05, 0.05};
 
-     Kalman_Filter_Init(&e_KF, 3, 0, 3);
- 
-     // ÉèÖÃ¾ØÕóÖµ
-     memcpy(e_KF.P_data, P_Init, sizeof(P_Init));
-     memcpy(e_KF.F_data, F_Init, sizeof(F_Init));
-     memcpy(e_KF.Q_data, Q_Init, sizeof(Q_Init));
-		 memcpy(e_KF.R_data, R_Init, sizeof(R_Init));
-		 memcpy(e_KF.H_data, H_Init, sizeof(H_Init));
-//		 memcpy(Height_KF.B_data, B_Init, sizeof(B_Init));
-		 memcpy(e_KF.MeasurementMap, measurement_reference, sizeof(measurement_reference));
-     memcpy(e_KF.MeasurementDegree, measurement_degree, sizeof(measurement_degree));
-     memcpy(e_KF.MatR_DiagonalElements, mat_R_diagonal_elements, sizeof(mat_R_diagonal_elements));
-     memcpy(e_KF.StateMinVariance, state_min_variance, sizeof(state_min_variance));
+  // ï¿½ï¿½ï¿½ï¿½ï¿½Ô¶ï¿½ï¿½ï¿½ï¿½ï¿½
+  g_KF.UseAutoAdjustment = 1;
+
+  //
+  uint8_t measurement_reference[3] = {1, 2, 3};
+
+  float measurement_degree[3] = {1, 1, 1};
+
+  float mat_R_diagonal_elements[3] = {100000, 100000, 100000};
+
+  Kalman_Filter_Init(&e_KF, 3, 0, 3);
+
+  // ï¿½ï¿½ï¿½Ã¾ï¿½ï¿½ï¿½Öµ
+  memcpy(e_KF.P_data, P_Init, sizeof(P_Init));
+  memcpy(e_KF.F_data, F_Init, sizeof(F_Init));
+  memcpy(e_KF.Q_data, Q_Init, sizeof(Q_Init));
+  memcpy(e_KF.R_data, R_Init, sizeof(R_Init));
+  memcpy(e_KF.H_data, H_Init, sizeof(H_Init));
+  //		 memcpy(Height_KF.B_data, B_Init, sizeof(B_Init));
+  memcpy(e_KF.MeasurementMap, measurement_reference, sizeof(measurement_reference));
+  memcpy(e_KF.MeasurementDegree, measurement_degree, sizeof(measurement_degree));
+  memcpy(e_KF.MatR_DiagonalElements, mat_R_diagonal_elements, sizeof(mat_R_diagonal_elements));
+  memcpy(e_KF.StateMinVariance, state_min_variance, sizeof(state_min_variance));
 }
 
-void KFupdate(float gx, float gy, float gz, float halfvx, float halfvy, float halfvz)
-{
-//		static float Q_Init[9] =
-//		{
-//				1, 0, 0,
-//        0, 1, 0,
-//        0, 0, 1				
-//		};
-//		static float Static_Q_Init[9] =
-//		{
-//			  0.00001, 0, 0,
-//        0, 0.00001, 0,
-//        0, 0, 0.00001		
-//		};
-//		if (gx < 0.1 && gx > -0.1 && gy < 0.05 && gy > -0.1 && gz < 0.1 && gz > -0.1)
-//		{
-//				memcpy(e_KF.Q_data, Static_Q_Init, sizeof(Static_Q_Init));
-//		}
-//		else
-//		{
-//				memcpy(e_KF.Q_data, Static_Q_Init, sizeof(Static_Q_Init));
-//		}
-//	
-		e_KF.xhat_data[0] = gx * (1.0f/sampleFreq);
-		e_KF.xhat_data[1] = gy * (1.0f/sampleFreq);
-		e_KF.xhat_data[2] = gz * (1.0f/sampleFreq);
-		
-		e_KF.MeasuredVector[0] = halfvx;
-    e_KF.MeasuredVector[1] = halfvy;
-    e_KF.MeasuredVector[2] = halfvz;
+void KFupdate(float gx, float gy, float gz, float halfvx, float halfvy, float halfvz) {
+  //		static float Q_Init[9] =
+  //		{
+  //				1, 0, 0,
+  //        0, 1, 0,
+  //        0, 0, 1
+  //		};
+  //		static float Static_Q_Init[9] =
+  //		{
+  //			  0.00001, 0, 0,
+  //        0, 0.00001, 0,
+  //        0, 0, 0.00001
+  //		};
+  //		if (gx < 0.1 && gx > -0.1 && gy < 0.05 && gy > -0.1 && gz < 0.1 && gz > -0.1)
+  //		{
+  //				memcpy(e_KF.Q_data, Static_Q_Init, sizeof(Static_Q_Init));
+  //		}
+  //		else
+  //		{
+  //				memcpy(e_KF.Q_data, Static_Q_Init, sizeof(Static_Q_Init));
+  //		}
+  //
+  e_KF.xhat_data[0] = gx * (1.0f / sampleFreq);
+  e_KF.xhat_data[1] = gy * (1.0f / sampleFreq);
+  e_KF.xhat_data[2] = gz * (1.0f / sampleFreq);
 
+  e_KF.MeasuredVector[0] = halfvx;
+  e_KF.MeasuredVector[1] = halfvy;
+  e_KF.MeasuredVector[2] = halfvz;
 
-	
-    // ¿¨¶ûÂüÂË²¨Æ÷¸üÐÂº¯Êý
-    Kalman_Filter_Update(&e_KF);
+  // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ë²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Âºï¿½ï¿½ï¿½
+  Kalman_Filter_Update(&e_KF);
 
-	  for (uint8_t i = 0; i < 3; i++)
-    {
-        eVec[i] = e_KF.FilteredValue[i];
-    }
-	
+  for (uint8_t i = 0; i < 3; i++) {
+    eVec[i] = e_KF.FilteredValue[i];
+  }
 }
 
-void EKFupdateIMU(float q[4], float gx, float gy, float gz, float ax, float ay, float az)
-{
-		if (!g_KF_initialized)
-		{
-				EKFinit(ax, ay, az);
-				g_KF_initialized = true;
-				return;
-		}
-	
-		EKFupdate(gx, gy, gz, ax, ay, az);
-		
-		float halfvx = (q[1] * q[3] - q[0] * q[2]);
-		float halfvy = (q[0] * q[1] + q[2] * q[3]);
-		float halfvz = (q[0] * q[0] - 0.5f + q[3] * q[3]);
-		Normalise(gVec);
+void EKFupdateIMU(float q[4], float gx, float gy, float gz, float ax, float ay, float az) {
+  if (!g_KF_initialized) {
+    EKFinit(ax, ay, az);
+    g_KF_initialized = true;
+    return;
+  }
 
-		// Error is sum of cross product between estimated and measured direction of gravity
-		float halfex = (gVec[1] * halfvz  - gVec[2] * halfvy);
-		float halfey = (gVec[2] * halfvx  - gVec[0] * halfvz);
-		float halfez = (gVec[0] * halfvy  - gVec[1] * halfvx);
-		
-		if (!e_KF_initialized)
-		{
-				KFinit();
-				e_KF_initialized = true;
-				return;
-		}
-		KFupdate(gx, gy, gz, halfex, halfey, halfez);
-		
-		float qa = q[0];
-		float qb = q[1];
-		float qc = q[2];
-		
-//			halfex *= 0.5;
-//			halfey *= 0.5;
-//		  halfez *= 0.5;
-		halfex = eVec[0] * 0.5f;
-		halfey = eVec[1] * 0.5f;
-		halfez = eVec[2] * 0.5f;
-//		q[0] += (-qb * eVec[0] - qc * eVec[1] - q[3] * eVec[2]);
-//		q[1] += (qa * eVec[0] + qc * eVec[2] - q[3] * eVec[1]);
-//		q[2] += (qa * eVec[1] - qb * eVec[2] + q[3] * eVec[0]);
-//		q[3] += (qa * eVec[2] + qb * eVec[1] - qc * eVec[0]);
-		q[0] += (-qb * halfex - qc * halfey - q[3] * halfez);
-		q[1] += (qa * halfex + qc * halfez - q[3] * halfey);
-		q[2] += (qa * halfey - qb * halfez + q[3] * halfex);
-		q[3] += (qa * halfez + qb * halfey - qc * halfex); 		
-		
-//	gx *= (0.5f * (1.0f / sampleFreq));		// pre-multiply common factors
-//	gy *= (0.5f * (1.0f / sampleFreq));
-//	gz *= (0.5f * (1.0f / sampleFreq));
-//	q[0] += (-qb * gx - qc * gy - q[3] * gz);
-//	q[1] += (qa * gx + qc * gz - q[3] * gy);
-//	q[2] += (qa * gy - qb * gz + q[3] * gx);
-//	q[3] += (qa * gz + qb * gy - qc * gx); 
-		
-		// Normalise quaternion
-		float recipNorm = invSqrt(q[0] * q[0] + q[1] * q[1] + q[2] * q[2] + q[3] * q[3]);
-		q[0] *= recipNorm;
-		q[1] *= recipNorm;
-		q[2] *= recipNorm;
-		q[3] *= recipNorm;
-		
+  EKFupdate(gx, gy, gz, ax, ay, az);
+
+  float halfvx = (q[1] * q[3] - q[0] * q[2]);
+  float halfvy = (q[0] * q[1] + q[2] * q[3]);
+  float halfvz = (q[0] * q[0] - 0.5f + q[3] * q[3]);
+  Normalise(gVec);
+
+  // Error is sum of cross product between estimated and measured direction of gravity
+  float halfex = (gVec[1] * halfvz - gVec[2] * halfvy);
+  float halfey = (gVec[2] * halfvx - gVec[0] * halfvz);
+  float halfez = (gVec[0] * halfvy - gVec[1] * halfvx);
+
+  if (!e_KF_initialized) {
+    KFinit();
+    e_KF_initialized = true;
+    return;
+  }
+  KFupdate(gx, gy, gz, halfex, halfey, halfez);
+
+  float qa = q[0];
+  float qb = q[1];
+  float qc = q[2];
+
+  //			halfex *= 0.5;
+  //			halfey *= 0.5;
+  //		  halfez *= 0.5;
+  halfex = eVec[0] * 0.5f;
+  halfey = eVec[1] * 0.5f;
+  halfez = eVec[2] * 0.5f;
+  //		q[0] += (-qb * eVec[0] - qc * eVec[1] - q[3] * eVec[2]);
+  //		q[1] += (qa * eVec[0] + qc * eVec[2] - q[3] * eVec[1]);
+  //		q[2] += (qa * eVec[1] - qb * eVec[2] + q[3] * eVec[0]);
+  //		q[3] += (qa * eVec[2] + qb * eVec[1] - qc * eVec[0]);
+  q[0] += (-qb * halfex - qc * halfey - q[3] * halfez);
+  q[1] += (qa * halfex + qc * halfez - q[3] * halfey);
+  q[2] += (qa * halfey - qb * halfez + q[3] * halfex);
+  q[3] += (qa * halfez + qb * halfey - qc * halfex);
+
+  //	gx *= (0.5f * (1.0f / sampleFreq));		// pre-multiply common factors
+  //	gy *= (0.5f * (1.0f / sampleFreq));
+  //	gz *= (0.5f * (1.0f / sampleFreq));
+  //	q[0] += (-qb * gx - qc * gy - q[3] * gz);
+  //	q[1] += (qa * gx + qc * gz - q[3] * gy);
+  //	q[2] += (qa * gy - qb * gz + q[3] * gx);
+  //	q[3] += (qa * gz + qb * gy - qc * gx);
+
+  // Normalise quaternion
+  float recipNorm = invSqrt(q[0] * q[0] + q[1] * q[1] + q[2] * q[2] + q[3] * q[3]);
+  q[0] *= recipNorm;
+  q[1] *= recipNorm;
+  q[2] *= recipNorm;
+  q[3] *= recipNorm;
 }
-

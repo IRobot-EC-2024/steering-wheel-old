@@ -1,10 +1,10 @@
 /**
   ****************************(C) COPYRIGHT 2016 DJI****************************
   * @file       remote_control.c/h
-  * @brief      Ò£¿ØÆ÷´¦Àí£¬Ò£¿ØÆ÷ÊÇÍ¨¹ýÀàËÆSBUSµÄÐ­Òé´«Êä£¬ÀûÓÃDMA´«Êä·½Ê½½ÚÔ¼CPU
-  *             ×ÊÔ´£¬ÀûÓÃ´®¿Ú¿ÕÏÐÖÐ¶ÏÀ´À­Æð´¦Àíº¯Êý£¬Í¬Ê±Ìá¹©Ò»Ð©µôÏßÖØÆôDMA£¬´®¿Ú
-  *             µÄ·½Ê½±£Ö¤ÈÈ²å°ÎµÄÎÈ¶¨ÐÔ¡£
-  * @note       
+  * @brief      Ò£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¨ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½SBUSï¿½ï¿½Ð­ï¿½é´«ï¿½ä£¬ï¿½ï¿½ï¿½ï¿½DMAï¿½ï¿½ï¿½ä·½Ê½ï¿½ï¿½Ô¼CPU
+  *             ï¿½ï¿½Ô´ï¿½ï¿½ï¿½ï¿½ï¿½Ã´ï¿½ï¿½Ú¿ï¿½ï¿½ï¿½ï¿½Ð¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¬Ê±ï¿½á¹©Ò»Ð©ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½DMAï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+  *             ï¿½Ä·ï¿½Ê½ï¿½ï¿½Ö¤ï¿½È²ï¿½Îµï¿½ï¿½È¶ï¿½ï¿½Ô¡ï¿½
+  * @note
   * @history
   *  Version    Date            Author          Modification
   *  V1.0.0     Dec-26-2018     RM              1. done
@@ -25,77 +25,77 @@
 
 #define RC_FRAME_LENGTH 18u
 
-#define RC_CH_VALUE_MIN         ((uint16_t)364)
-#define RC_CH_VALUE_OFFSET      ((uint16_t)1024)
-#define RC_CH_VALUE_MAX         ((uint16_t)1684)
+#define RC_CH_VALUE_MIN ((uint16_t)364)
+#define RC_CH_VALUE_OFFSET ((uint16_t)1024)
+#define RC_CH_VALUE_MAX ((uint16_t)1684)
 
 /* ----------------------- RC Switch Definition----------------------------- */
-#define RC_SW_UP                ((uint16_t)1)
-#define RC_SW_MID               ((uint16_t)3)
-#define RC_SW_DOWN              ((uint16_t)2)
-#define switch_is_down(s)       (s == RC_SW_DOWN)
-#define switch_is_mid(s)        (s == RC_SW_MID)
-#define switch_is_up(s)         (s == RC_SW_UP)
-#define PRESS                   ((uint8_t)1)
-#define RELEASE                 ((uint8_t)0)
+#define RC_SW_UP ((uint16_t)1)
+#define RC_SW_MID ((uint16_t)3)
+#define RC_SW_DOWN ((uint16_t)2)
+#define switch_is_down(s) (s == RC_SW_DOWN)
+#define switch_is_mid(s) (s == RC_SW_MID)
+#define switch_is_up(s) (s == RC_SW_UP)
+#define PRESS ((uint8_t)1)
+#define RELEASE ((uint8_t)0)
 /* ----------------------- PC Key Definition-------------------------------- */
-#define KEY_PRESSED_OFFSET_W            ((uint16_t)1 << 0)
-#define KEY_PRESSED_OFFSET_S            ((uint16_t)1 << 1)
-#define KEY_PRESSED_OFFSET_A            ((uint16_t)1 << 2)
-#define KEY_PRESSED_OFFSET_D            ((uint16_t)1 << 3)
-#define KEY_PRESSED_OFFSET_SHIFT        ((uint16_t)1 << 4)
-#define KEY_PRESSED_OFFSET_CTRL         ((uint16_t)1 << 5)
-#define KEY_PRESSED_OFFSET_Q            ((uint16_t)1 << 6)
-#define KEY_PRESSED_OFFSET_E            ((uint16_t)1 << 7)
-#define KEY_PRESSED_OFFSET_R            ((uint16_t)1 << 8)
-#define KEY_PRESSED_OFFSET_F            ((uint16_t)1 << 9)
-#define KEY_PRESSED_OFFSET_G            ((uint16_t)1 << 10)
-#define KEY_PRESSED_OFFSET_Z            ((uint16_t)1 << 11)
-#define KEY_PRESSED_OFFSET_X            ((uint16_t)1 << 12)
-#define KEY_PRESSED_OFFSET_C            ((uint16_t)1 << 13)
-#define KEY_PRESSED_OFFSET_V            ((uint16_t)1 << 14)
-#define KEY_PRESSED_OFFSET_B            ((uint16_t)1 << 15)
+#define KEY_PRESSED_OFFSET_W ((uint16_t)1 << 0)
+#define KEY_PRESSED_OFFSET_S ((uint16_t)1 << 1)
+#define KEY_PRESSED_OFFSET_A ((uint16_t)1 << 2)
+#define KEY_PRESSED_OFFSET_D ((uint16_t)1 << 3)
+#define KEY_PRESSED_OFFSET_SHIFT ((uint16_t)1 << 4)
+#define KEY_PRESSED_OFFSET_CTRL ((uint16_t)1 << 5)
+#define KEY_PRESSED_OFFSET_Q ((uint16_t)1 << 6)
+#define KEY_PRESSED_OFFSET_E ((uint16_t)1 << 7)
+#define KEY_PRESSED_OFFSET_R ((uint16_t)1 << 8)
+#define KEY_PRESSED_OFFSET_F ((uint16_t)1 << 9)
+#define KEY_PRESSED_OFFSET_G ((uint16_t)1 << 10)
+#define KEY_PRESSED_OFFSET_Z ((uint16_t)1 << 11)
+#define KEY_PRESSED_OFFSET_X ((uint16_t)1 << 12)
+#define KEY_PRESSED_OFFSET_C ((uint16_t)1 << 13)
+#define KEY_PRESSED_OFFSET_V ((uint16_t)1 << 14)
+#define KEY_PRESSED_OFFSET_B ((uint16_t)1 << 15)
 
-#define YAW_REMOTE_SENS                         0.1f
-#define PITCH_REMOTE_SENS                       1.0f
-#define YAW_MOUSE_SENS                          100
-#define PITCH_MOUSE_SENS                        50
+#define YAW_REMOTE_SENS 0.1f
+#define PITCH_REMOTE_SENS 1.0f
+#define YAW_MOUSE_SENS 100
+#define PITCH_MOUSE_SENS 50
 
-// ÔÆÌ¨ÔË¶¯¿ØÖÆÖ¸Áî
+// ï¿½ï¿½Ì¨ï¿½Ë¶ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½
 // YAW
-#define GIMBAL_CMD_YAW_KEYMAP           NormalizedLimit(MouseMoveY()*YAW_MOUSE_SENS + RemoteChannalLeftY()*YAW_REMOTE_SENS)
+#define GIMBAL_CMD_YAW_KEYMAP NormalizedLimit(MouseMoveY() * YAW_MOUSE_SENS + RemoteChannalLeftY() * YAW_REMOTE_SENS)
 // PITCH
-#define GIMBAL_CMD_PITCH_KEYMAP         -NormalizedLimit(MouseMoveX()*PITCH_MOUSE_SENS + RemoteChannalLeftX()*PITCH_REMOTE_SENS)
+#define GIMBAL_CMD_PITCH_KEYMAP \
+  -NormalizedLimit(MouseMoveX() * PITCH_MOUSE_SENS + RemoteChannalLeftX() * PITCH_REMOTE_SENS)
 
-// µ×ÅÌÔË¶¯¿ØÖÆÖ¸Áî
-// Ç°ºó
-#define CHASSIS_CMD_X_KEYMAP            NormalizedLimit((RemoteChannalRightX() + CheakKeyPress(KEY_PRESSED_OFFSET_W) - CheakKeyPress(KEY_PRESSED_OFFSET_S)))
-// ×óÓÒ
-#define CHASSIS_CMD_Y_KEYMAP            NormalizedLimit((RemoteChannalRightY() + CheakKeyPress(KEY_PRESSED_OFFSET_A) - CheakKeyPress(KEY_PRESSED_OFFSET_D)))
-// ¸ßËÙ
+// ï¿½ï¿½ï¿½ï¿½ï¿½Ë¶ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½
+// Ç°ï¿½ï¿½
+#define CHASSIS_CMD_X_KEYMAP \
+  NormalizedLimit((RemoteChannalRightX() + CheakKeyPress(KEY_PRESSED_OFFSET_W) - CheakKeyPress(KEY_PRESSED_OFFSET_S)))
+// ï¿½ï¿½ï¿½ï¿½
+#define CHASSIS_CMD_Y_KEYMAP \
+  NormalizedLimit((RemoteChannalRightY() + CheakKeyPress(KEY_PRESSED_OFFSET_A) - CheakKeyPress(KEY_PRESSED_OFFSET_D)))
+// ï¿½ï¿½ï¿½ï¿½
 
 /* ----------------------- Data Struct ------------------------------------- */
-typedef __PACKED_STRUCT
-{
-        __PACKED_STRUCT
-        {
-                int16_t ch[5];
-                char s[2];
-        } rc;
-        __PACKED_STRUCT
-        {
-                int16_t x;
-                int16_t y;
-                int16_t z;
-                uint8_t press_l;
-                uint8_t press_r;
-        } mouse;
-        __PACKED_STRUCT
-        {
-                uint16_t v;
-        } key;
-
-} RC_ctrl_t;
+typedef __PACKED_STRUCT {
+  __PACKED_STRUCT {
+    int16_t ch[5];
+    char s[2];
+  }
+  rc;
+  __PACKED_STRUCT {
+    int16_t x;
+    int16_t y;
+    int16_t z;
+    uint8_t press_l;
+    uint8_t press_r;
+  }
+  mouse;
+  __PACKED_STRUCT { uint16_t v; }
+  key;
+}
+RC_ctrl_t;
 
 /* ----------------------- Internal Data ----------------------------------- */
 
@@ -106,27 +106,27 @@ extern void slove_RC_lost(void);
 extern void slove_data_error(void);
 extern void sbus_to_rc(uint8_t DmaBufNmb);
 
-//³¤°´´¥·¢ÇøÓòµÄ¼üÖµ¼ì²â
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½Öµï¿½ï¿½ï¿½
 extern bool_t CheakKeyPress(uint16_t Key);
-//±ßÑØ´¥·¢¼ì²â
+// ï¿½ï¿½ï¿½Ø´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 extern bool_t CheakKeyPressOnce(uint16_t Key);
 
-// ¹éÒ»»¯Ò¡¸ËÖµ
+// ï¿½ï¿½Ò»ï¿½ï¿½Ò¡ï¿½ï¿½Öµ
 extern fp32 RemoteChannalRightX();
 extern fp32 RemoteChannalRightY();
 extern fp32 RemoteChannalLeftX();
 extern fp32 RemoteChannalLeftY();
 extern fp32 RemoteDial();
 
-// ¹éÒ»»¯Êó±êÒÆ¶¯
+// ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ¶ï¿½
 extern fp32 MouseMoveX();
 extern fp32 MouseMoveY();
 
-// Êó±ê×óÓÒ¼ü
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò¼ï¿½
 extern bool_t MousePressLeft();
 extern bool_t MousePressRight();
 
-// ²¦¸ËÎ»ÖÃ¼ì²â
+// ï¿½ï¿½ï¿½ï¿½Î»ï¿½Ã¼ï¿½ï¿½
 extern bool_t SwitchRightUpSide();
 extern bool_t SwitchRightMidSide();
 extern bool_t SwitchRightDownSide();
@@ -134,10 +134,8 @@ extern bool_t SwitchLeftUpSide();
 extern bool_t SwitchLeftMidSide();
 extern bool_t SwitchLeftDownSide();
 
-
 extern fp32 NormalizedLimit(fp32 input);
 
 extern RC_ctrl_t rc_ctrl;
-
 
 #endif

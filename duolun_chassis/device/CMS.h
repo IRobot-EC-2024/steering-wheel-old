@@ -3,32 +3,24 @@
 
 #include "struct_typedef.h"
 
-typedef enum
-{
-	NORMAL,
-	HIGH_SPEED,
-	FLY
-}CMS_Mode_e;
+typedef enum { NORMAL, HIGH_SPEED, FLY } CMS_Mode_e;
 
+typedef struct {
+  float cms_cap_v;      // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ëµï¿½Ñ¹Ucr
+  float cms_cap_p;      // ï¿½ï¿½ï¿½Ý³ï¿½power
+  uint16_t cms_status;  // ï¿½ï¿½ï¿½ï¿½×´Ì¬
+  CMS_Mode_e Mode;      // 1Ê¹ï¿½Ãµï¿½ï¿½ï¿½
+  uint8_t charge_flag;
+  /*
+                      bit0	ï¿½ï¿½ï¿½Ý¹ï¿½Ñ¹
+                      bit1	ï¿½ï¿½ï¿½Ý¹ï¿½ï¿½ï¿½
+                      bit2	ï¿½ï¿½ï¿½ï¿½Ç·Ñ¹
+                      bit3	ï¿½ï¿½ï¿½ï¿½ÏµÍ³Ç·Ñ¹
+                      bit4	Î´ï¿½ï¿½ï¿½ï¿½CANÍ¨ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+      */
+} CMS_Data_t;
 
-typedef struct
-{
-
-    float cms_cap_v;   		//µçÈÝÁ½¶ËµçÑ¹Ucr
-    float cms_cap_p;     	//µçÈÝ³äpower
-	uint16_t cms_status;    //µçÈÝ×´Ì¬
-	CMS_Mode_e Mode;  //1Ê¹ÓÃµçÈÝ
-	uint8_t charge_flag;
-    /*
-			bit0	µçÈÝ¹ýÑ¹
-			bit1	µçÈÝ¹ýÁ÷
-			bit2	µçÈÝÇ·Ñ¹
-			bit3	²ÃÅÐÏµÍ³Ç·Ñ¹
-			bit4	Î´¶Áµ½CANÍ¨ÐÅÊý¾Ý
-	*/
-}CMS_Data_t;
-
-//typedef struct
+// typedef struct
 //{
 //	uint8_t Enable;
 //	uint8_t RxOpen;
@@ -36,18 +28,18 @@ typedef struct
 //	int16_t Electricity;
 //	int16_t charge_limit;//*100
 //	uint8_t TxOpen;
-//	
-//	uint8_t Mode;  //1Ê¹ÓÃµçÈÝ
-//	
-//}CMS_t;
+//
+//	uint8_t Mode;  //1Ê¹ï¿½Ãµï¿½ï¿½ï¿½
+//
+// }CMS_t;
 
 extern CMS_Data_t CMS_Data;
-
 
 extern int16_t float_to_int16(float a, float a_max, float a_min, int16_t b_max, int16_t b_min);
 extern float int16_to_float(int16_t a, int16_t a_max, int16_t a_min, float b_max, float b_min);
 
 extern void CMS_BUFFER_SEND(int16_t buffer);
-extern void CMS_POWER_SEND(int16_t input_power_limit,int16_t output_powe_limit,int16_t cap_power_limit,int16_t cap_control);
+extern void CMS_POWER_SEND(int16_t input_power_limit, int16_t output_powe_limit, int16_t cap_power_limit,
+                           int16_t cap_control);
 
 #endif
