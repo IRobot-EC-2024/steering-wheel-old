@@ -32,7 +32,7 @@
 #define CHASSIS_CMD_Y_KEYMAP \
   NormalizedLimit((RemoteChannalRightY() - CheakKeyPress(KEY_PRESSED_OFFSET_D) + CheakKeyPress(KEY_PRESSED_OFFSET_A)))
 // ����
-#define CHASSIS_HIGH_SPEED_KEYMAP CheakKeyPress(KEY_PRESSED_OFFSET_C)
+#define CHASSIS_HIGH_SPEED_KEYMAP CheakKeyPress(KEY_PRESSED_OFFSET_R)
 // ����
 #define CHASSIS_STOP_KEYMAP CheakKeyPressOnce(KEY_PRESSED_OFFSET_V)
 // ����С����
@@ -43,9 +43,6 @@
 // С����
 #define CHASSIS_ROTATE_SWITCH_KEYMAP \
   CheakKeyPress(KEY_PRESSED_OFFSET_SHIFT) || CheakKeyPress(KEY_PRESSED_OFFSET_CTRL) || (RemoteDial() == -1.0f)
-
-// �򿪵��ո�
-#define COVER_SWITCH_KEYMAP CheakKeyPressOnce(KEY_PRESSED_OFFSET_R)
 
 // ����pitch����
 #define AIMBOT_PITCH_BIAS_LOW_KEYMAP (CheakKeyPress(KEY_PRESSED_OFFSET_CTRL) && CheakKeyPressOnce(KEY_PRESSED_OFFSET_C))

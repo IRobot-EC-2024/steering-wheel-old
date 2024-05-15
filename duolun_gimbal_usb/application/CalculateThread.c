@@ -52,7 +52,6 @@ void RotorCommandUpdate(void);
 void AmmoCommandUpdate(void);
 void DebugLEDShow(void);
 void GimbalRequestStatePacketSend(void);
-void BoomBayCover(void);
 void ShootSpeedAdopt(void);
 uint16_t Power_Max = 45;
 fp32 v_gain;
@@ -123,7 +122,6 @@ void CalculateThread(void const *pvParameters) {
     control_counter += 1;
 
     DebugLEDShow();
-    BoomBayCover();  // ���ոǿ���
 
     minus = Aimbot.SystemTimer - ImuPacket.TimeStamp;
 
@@ -531,43 +529,6 @@ void AmmoCommandUpdate(void) {
 }
 
 void GetGimbalMotorOutput(GimbalOutput_t *out) { memcpy(out, &Gimbal.Output, sizeof(GimbalOutput_t)); }
-
-bool_t cover_flag = 0;
-void BoomBayCover(void) {
-  __HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_1, 1500);
-
-  if (Gimbal.StateMachine == GM_MATCH) {
-    if (cover_flag == 0) {
-      cover_flag = 2;
-    }
-
-    if (COVER_SWITCH_KEYMAP) {
-      if (cover_flag == 1) {
-        cover_flag = 2;
-        HAL_GPIO_WritePin(Laser_GPIO_Port, Laser_Pin, GPIO_PIN_SET);
-      } else if (cover_flag == 2) {
-        cover_flag = 1;
-        HAL_GPIO_WritePin(Laser_GPIO_Port, Laser_Pin, GPIO_PIN_RESET);
-      }
-    }
-  } else {
-    if (SHOOT_COMMAND_KEYMAP) {
-      cover_flag = 1;
-      HAL_GPIO_WritePin(Laser_GPIO_Port, Laser_Pin, GPIO_PIN_RESET);
-    } else {
-      cover_flag = 2;
-      HAL_GPIO_WritePin(Laser_GPIO_Port, Laser_Pin, GPIO_PIN_SET);
-    }
-  }
-  // HAL_GPIO_WritePin(Laser_GPIO_Port, Laser_Pin, GPIO_PIN_RESET);
-
-  if ((cover_flag == 1) || (cover_flag == 0)) {
-    __HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_1, 1800);  // �ĺţ�2245 ���� 1250    ��
-  }
-  if (cover_flag == 2) {
-    __HAL_TIM_SetCompare(&htim1, TIM_CHANNEL_1, 940);  // �ĺţ�500   �ر�
-  }
-}
 
 void GetGimbalRequestState(GimbalRequestState_t *RequestState) {
   if (Gimbal.StateMachine == GM_NO_FORCE) {

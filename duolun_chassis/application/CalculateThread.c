@@ -339,10 +339,11 @@ void ChassisCommandUpdate() {
     Chassis.vx = cap_gain * Chassis.vx;
     Chassis.vy = cap_gain * Chassis.vy;
     Chassis.wz = 1.0 * Chassis.wz;
-  } else if (((CMS_Data.cms_status) & (uint16_t)1) != 1 && CMS_Data.Mode == HIGH_SPEED && Power_Max <= 120) {
-    Chassis.vx = Chassis.vx * 1.24;
-    Chassis.vy = Chassis.vy * 1.24;
-    Chassis.wz += 1.0 * Chassis.wz;
+  } else if (((CMS_Data.cms_status) & (uint16_t)1) != 1 && CMS_Data.Mode == HIGH_SPEED &&
+             PTZ.ChassisStatueRequest & (0x01 << 5) && Power_Max <= 120) {
+    Chassis.vx = 1.24f * Chassis.vx;
+    Chassis.vy = 1.24f * Chassis.vy;
+    Chassis.wz = 1.0 * Chassis.wz;
   }
 
   for (uint8_t i = 0; i < 4;) {
