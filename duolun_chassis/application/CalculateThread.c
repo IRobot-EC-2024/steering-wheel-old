@@ -336,14 +336,15 @@ void ChassisCommandUpdate() {
   /***********************                 轮电机解算                    ******************************/
 
   if (((CMS_Data.cms_status) & (uint16_t)1) != 1 && CMS_Data.Mode == FLY) {
+    // 如果超级电容状态正常，并且操作手按了电容键，就给速度目标乘上当前功率下的电容速度增益系数
+    // 各个功率限制下增益系数的值可以在全局变量cap_gain_table中修改
     Chassis.vx = cap_gain * Chassis.vx;
     Chassis.vy = cap_gain * Chassis.vy;
-    Chassis.wz = 1.0 * Chassis.wz;
   } else if (((CMS_Data.cms_status) & (uint16_t)1) != 1 && CMS_Data.Mode == HIGH_SPEED &&
-             PTZ.ChassisStatueRequest & (0x01 << 5) && Power_Max <= 120) {
+             PTZ.ChassisStatueRequest & (0x01 << 7) && Power_Max <= 120) {
+    // 如果超级电容状态正常并且有电，报告可以开高速模式，并且操作手按了高速键，且最大功率小于120w，就给速度目标乘上1.24
     Chassis.vx = 1.24f * Chassis.vx;
     Chassis.vy = 1.24f * Chassis.vy;
-    Chassis.wz = 1.0 * Chassis.wz;
   }
 
   for (uint8_t i = 0; i < 4;) {

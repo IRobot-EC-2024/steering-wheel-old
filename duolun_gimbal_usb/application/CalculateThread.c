@@ -430,7 +430,7 @@ void GimbalCommandUpdate(void) {
     //			Gimbal.Command.Pitch += GIMBAL_CMD_PITCH_KEYMAP;
     //		}
     //		Gimbal.Command.Yaw = LoopFifoFp32_read(&Gimbal.ImuBuffer.YawLoopPointer, (GetSystemTimer() -
-    //Aimbot.SystemTimer+t)) + Aimbot.YawRelativeAngle;
+    // Aimbot.SystemTimer+t)) + Aimbot.YawRelativeAngle;
     //        Gimbal.Command.Pitch = LoopFifoFp32_read(&Gimbal.ImuBuffer.PitchLoopPointer, (GetSystemTimer() -
     //        Aimbot.SystemTimer+t)) + Aimbot.PitchRelativeAngle + aimbot_pitch_bias;
     Gimbal.Command.Yaw =
@@ -446,7 +446,7 @@ void GimbalCommandUpdate(void) {
     Gimbal.Command.Pitch = Aimbot.PitchRelativeAngle;
 
     //		Gimbal.Command.Yaw = LoopFifoFp32_read(&Gimbal.ImuBuffer.YawLoopPointer, (GetSystemTimer() -
-    //Aimbot.SystemTimer)) + Aimbot.YawRelativeAngle;
+    // Aimbot.SystemTimer)) + Aimbot.YawRelativeAngle;
     //        Gimbal.Command.Pitch = LoopFifoFp32_read(&Gimbal.ImuBuffer.PitchLoopPointer, (GetSystemTimer() -
     //        Aimbot.SystemTimer)) + Aimbot.PitchRelativeAngle + aimbot_pitch_bias; fp32 pitch_command =
     //        LoopFifoFp32_read(&Gimbal.ImuBuffer.PitchLoopPointer, (GetSystemTimer() - Aimbot.CommandTimer)) +
@@ -585,11 +585,14 @@ void GetGimbalRequestState(GimbalRequestState_t *RequestState) {
       RequestState->ChassisStateRequest |= (uint8_t)(1 << 4);
     }
 
-    if (CHASSIS_HIGH_SPEED_KEYMAP) {
+    if (SUPER_CAP_SWITCH_KEYMAP) {
       RequestState->ChassisStateRequest |= (uint8_t)(1 << 5);
     }
     if (CHASSIS_HIGH_SPEED_ROTATE) {
       RequestState->ChassisStateRequest |= (uint8_t)(1 << 6);
+    }
+    if (CHASSIS_HIGH_SPEED_KEYMAP) {
+      RequestState->ChassisStateRequest |= (uint8_t)(1 << 7);
     }
 
     //        if (Chassis.ChassisSpeed = CHASSIS_NORMAL_SPEED) {
