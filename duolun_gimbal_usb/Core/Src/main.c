@@ -110,6 +110,7 @@ int main(void)
   MX_TIM6_Init();
   MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
+  MX_USB_DEVICE_Init();
   delay_init();
   remote_control_init();
   can_filter_init();

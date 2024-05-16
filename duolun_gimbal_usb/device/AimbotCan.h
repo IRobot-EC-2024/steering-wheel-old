@@ -4,21 +4,22 @@
 #include "struct_typedef.h"
 #include "CanPacket.h"
 
-#define AIMBOT_LOST_TARGET_OFFSET ((uint8_t)0x00)
-#define AIMBOT_TARGET_INSIDE_OFFSET ((uint8_t)1 << 0)
-#define AIMBOT_SHOOT_REQUEST_OFFSET ((uint8_t)1 << 1)
+#define AIMBOT_LOST_TARGET_OFFSET       ((uint8_t)0x00)
+#define AIMBOT_TARGET_INSIDE_OFFSET     ((uint8_t)1<<0)
+#define AIMBOT_SHOOT_REQUEST_OFFSET     ((uint8_t)1<<1)
 
-typedef struct {
-  uint8_t State;
-  uint8_t Target;
-  fp32 PitchRelativeAngle;
-  fp32 YawRelativeAngle;
-  uint32_t CommandTimer;  // Ê±ï¿½ï¿½ï¿½
-} AimbotCommand_t;        // ï¿½ï¿½ï¿½ï¿½á¹¹ï¿½ï¿½
+typedef struct
+{
+    uint8_t     State;
+    uint8_t     Target;
+    fp32        PitchRelativeAngle;
+    fp32        YawRelativeAngle;
+    uint32_t    CommandTimer;//Ê±¼ä´Á
+} AimbotCommand_t;//×ÔÃé½á¹¹Ìå
 
-// extern void AimbotCommandUpdate(AimbotCommandNoraml_t *AimbotCommandNoraml);
-// extern void AimbotStateUpdate(AimbotStateNoraml_t *AimbotStateNoraml);
+extern void AimbotCommandUpdate(AimbotCommandNoraml_t *AimbotCommandNoraml);
+extern void AimbotStateUpdate(AimbotStateNoraml_t *AimbotStateNoraml);
 
-// extern void GetAimbotCommand(AimbotCommand_t *Aimbot);
+extern void GetAimbotCommand(AimbotCommand_t *Aimbot);
 
 #endif

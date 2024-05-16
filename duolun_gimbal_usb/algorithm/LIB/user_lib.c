@@ -1,176 +1,222 @@
 #include "user_lib.h"
 #include "arm_math.h"
-// #include "math.h"
+//#include "math.h"
 
 /**
- * @brief          Ð±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½
- * @author         RM
- * @param[in]      Ð±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½á¹¹ï¿½ï¿½
- * @param[in]      ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ä£¬ï¿½ï¿½Î» s
- * @param[in]      ï¿½ï¿½ï¿½Öµ
- * @param[in]      ï¿½ï¿½Ð¡Öµ
- * @retval         ï¿½ï¿½ï¿½Ø¿ï¿½
- */
-void ramp_init(ramp_function_source_t *ramp_source_type, fp32 frame_period, fp32 max, fp32 min) {
-  ramp_source_type->frame_period = frame_period;
-  ramp_source_type->max_value = max;
-  ramp_source_type->min_value = min;
-  ramp_source_type->input = 0.0f;
-  ramp_source_type->out = 0.0f;
-}
-
-/**
- * @brief          Ð±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ã£¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½ï¿½Ðµï¿½ï¿½Ó£ï¿½ ï¿½ï¿½ï¿½ëµ¥Î»Îª /s ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµ
- * @author         RM
- * @param[in]      Ð±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½á¹¹ï¿½ï¿½
- * @param[in]      ï¿½ï¿½ï¿½ï¿½Öµ
- * @param[in]      ï¿½Ë²ï¿½ï¿½ï¿½ï¿½ï¿½
- * @retval         ï¿½ï¿½ï¿½Ø¿ï¿½
- */
-void ramp_calc(ramp_function_source_t *ramp_source_type, fp32 input) {
-  ramp_source_type->input = input;
-  ramp_source_type->out += ramp_source_type->input * ramp_source_type->frame_period;
-  if (ramp_source_type->out > ramp_source_type->max_value) {
-    ramp_source_type->out = ramp_source_type->max_value;
-  } else if (ramp_source_type->out < ramp_source_type->min_value) {
-    ramp_source_type->out = ramp_source_type->min_value;
-  }
-}
-/**
- * @brief          Ò»ï¿½×µï¿½Í¨ï¿½Ë²ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½
- * @author         RM
- * @param[in]      Ò»ï¿½×µï¿½Í¨ï¿½Ë²ï¿½ï¿½á¹¹ï¿½ï¿½
- * @param[in]      ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ä£¬ï¿½ï¿½Î» s
- * @param[in]      ï¿½Ë²ï¿½ï¿½ï¿½ï¿½ï¿½
- * @retval         ï¿½ï¿½ï¿½Ø¿ï¿½
- */
-void first_order_filter_init(first_order_filter_type_t *first_order_filter_type, fp32 frame_period, const fp32 num[1]) {
-  first_order_filter_type->frame_period = frame_period;
-  first_order_filter_type->num[0] = num[0];
-  first_order_filter_type->input = 0.0f;
-  first_order_filter_type->out = 0.0f;
+  * @brief          Ð±²¨º¯Êý³õÊ¼»¯
+  * @author         RM
+  * @param[in]      Ð±²¨º¯Êý½á¹¹Ìå
+  * @param[in]      ¼ä¸ôµÄÊ±¼ä£¬µ¥Î» s
+  * @param[in]      ×î´óÖµ
+  * @param[in]      ×îÐ¡Öµ
+  * @retval         ·µ»Ø¿Õ
+  */
+void ramp_init(ramp_function_source_t *ramp_source_type, fp32 frame_period, fp32 max, fp32 min)
+{
+    ramp_source_type->frame_period = frame_period;
+    ramp_source_type->max_value = max;
+    ramp_source_type->min_value = min;
+    ramp_source_type->input = 0.0f;
+    ramp_source_type->out = 0.0f;
 }
 
 /**
- * @brief          Ò»ï¿½×µï¿½Í¨ï¿½Ë²ï¿½ï¿½ï¿½ï¿½ï¿½
- * @author         RM
- * @param[in]      Ò»ï¿½×µï¿½Í¨ï¿½Ë²ï¿½ï¿½á¹¹ï¿½ï¿½
- * @param[in]      ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ä£¬ï¿½ï¿½Î» s
- * @retval         ï¿½ï¿½ï¿½Ø¿ï¿½
- */
-void first_order_filter_cali(first_order_filter_type_t *first_order_filter_type, fp32 input) {
-  first_order_filter_type->input = input;
-  first_order_filter_type->out =
-      first_order_filter_type->num[0] / (first_order_filter_type->num[0] + first_order_filter_type->frame_period) *
-          first_order_filter_type->out +
-      first_order_filter_type->frame_period /
-          (first_order_filter_type->num[0] + first_order_filter_type->frame_period) * first_order_filter_type->input;
+  * @brief          Ð±²¨º¯Êý¼ÆËã£¬¸ù¾ÝÊäÈëµÄÖµ½øÐÐµþ¼Ó£¬ ÊäÈëµ¥Î»Îª /s ¼´Ò»ÃëºóÔö¼ÓÊäÈëµÄÖµ
+  * @author         RM
+  * @param[in]      Ð±²¨º¯Êý½á¹¹Ìå
+  * @param[in]      ÊäÈëÖµ
+  * @param[in]      ÂË²¨²ÎÊý
+  * @retval         ·µ»Ø¿Õ
+  */
+void ramp_calc(ramp_function_source_t *ramp_source_type, fp32 input)
+{
+    ramp_source_type->input = input;
+    ramp_source_type->out += ramp_source_type->input * ramp_source_type->frame_period;
+    if (ramp_source_type->out > ramp_source_type->max_value)
+    {
+        ramp_source_type->out = ramp_source_type->max_value;
+    }
+    else if (ramp_source_type->out < ramp_source_type->min_value)
+    {
+        ramp_source_type->out = ramp_source_type->min_value;
+    }
+}
+/**
+  * @brief          Ò»½×µÍÍ¨ÂË²¨³õÊ¼»¯
+  * @author         RM
+  * @param[in]      Ò»½×µÍÍ¨ÂË²¨½á¹¹Ìå
+  * @param[in]      ¼ä¸ôµÄÊ±¼ä£¬µ¥Î» s
+  * @param[in]      ÂË²¨²ÎÊý
+  * @retval         ·µ»Ø¿Õ
+  */
+void first_order_filter_init(first_order_filter_type_t *first_order_filter_type, fp32 frame_period, const fp32 num[1])
+{
+    first_order_filter_type->frame_period = frame_period;
+    first_order_filter_type->num[0] = num[0];
+    first_order_filter_type->input = 0.0f;
+    first_order_filter_type->out = 0.0f;
 }
 
-// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
-void abs_limit(fp32 *num, fp32 Limit) {
-  if (*num > Limit) {
-    *num = Limit;
-  } else if (*num < -Limit) {
-    *num = -Limit;
-  }
+/**
+  * @brief          Ò»½×µÍÍ¨ÂË²¨¼ÆËã
+  * @author         RM
+  * @param[in]      Ò»½×µÍÍ¨ÂË²¨½á¹¹Ìå
+  * @param[in]      ¼ä¸ôµÄÊ±¼ä£¬µ¥Î» s
+  * @retval         ·µ»Ø¿Õ
+  */
+void first_order_filter_cali(first_order_filter_type_t *first_order_filter_type, fp32 input)
+{
+    first_order_filter_type->input = input;
+    //first_order_filter_type->out =
+    //    first_order_filter_type->num[0] / (first_order_filter_type->num[0] + first_order_filter_type->frame_period) * first_order_filter_type->out + first_order_filter_type->frame_period / (first_order_filter_type->num[0] + first_order_filter_type->frame_period) * first_order_filter_type->input;
+	first_order_filter_type->out = first_order_filter_type->input * (1-first_order_filter_type->num[0]) + first_order_filter_type->out * first_order_filter_type->num[0];
 }
 
-// ï¿½Ð¶Ï·ï¿½ï¿½ï¿½Î»
-fp32 sign(fp32 value) {
-  if (value >= 0.0f) {
-    return 1.0f;
-  } else {
-    return -1.0f;
-  }
+//¾ø¶ÔÏÞÖÆ
+void abs_limit(fp32 *num, fp32 Limit)
+{
+    if (*num > Limit)
+    {
+        *num = Limit;
+    }
+    else if (*num < -Limit)
+    {
+        *num = -Limit;
+    }
 }
 
-// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
-fp32 fp32_deadline(fp32 Value, fp32 minValue, fp32 maxValue) {
-  if (Value < maxValue && Value > minValue) {
-    Value = 0.0f;
-  }
-  return Value;
+//ÅÐ¶Ï·ûºÅÎ»
+fp32 sign(fp32 value)
+{
+    if (value >= 0.0f)
+    {
+        return 1.0f;
+    }
+    else
+    {
+        return -1.0f;
+    }
 }
 
-// int26ï¿½ï¿½ï¿½ï¿½
-int16_t int16_deadline(int16_t Value, int16_t minValue, int16_t maxValue) {
-  if (Value < maxValue && Value > minValue) {
-    Value = 0;
-  }
-  return Value;
-}
-
-// ï¿½Þ·ï¿½ï¿½ï¿½ï¿½ï¿½
-fp32 fp32_constrain(fp32 Value, fp32 minValue, fp32 maxValue) {
-  if (Value < minValue)
-    return minValue;
-  else if (Value > maxValue)
-    return maxValue;
-  else
+//¸¡µãËÀÇø
+fp32 fp32_deadline(fp32 Value, fp32 minValue, fp32 maxValue)
+{
+    if (Value < maxValue && Value > minValue)
+    {
+        Value = 0.0f;
+    }
     return Value;
 }
 
-// ï¿½Þ·ï¿½ï¿½ï¿½ï¿½ï¿½
-int16_t int16_constrain(int16_t Value, int16_t minValue, int16_t maxValue) {
-  if (Value < minValue)
-    return minValue;
-  else if (Value > maxValue)
-    return maxValue;
-  else
+//int26ËÀÇø
+int16_t int16_deadline(int16_t Value, int16_t minValue, int16_t maxValue)
+{
+    if (Value < maxValue && Value > minValue)
+    {
+        Value = 0;
+    }
     return Value;
 }
 
-// Ñ­ï¿½ï¿½ï¿½Þ·ï¿½ï¿½ï¿½ï¿½ï¿½
-fp32 loop_fp32_constrain(fp32 Input, fp32 minValue, fp32 maxValue) {
-  if (maxValue < minValue) {
+//ÏÞ·ùº¯Êý
+fp32 fp32_constrain(fp32 Value, fp32 minValue, fp32 maxValue)
+{
+    if (Value < minValue)
+        return minValue;
+    else if (Value > maxValue)
+        return maxValue;
+    else
+        return Value;
+}
+
+//ÏÞ·ùº¯Êý
+int16_t int16_constrain(int16_t Value, int16_t minValue, int16_t maxValue)
+{
+    if (Value < minValue)
+        return minValue;
+    else if (Value > maxValue)
+        return maxValue;
+    else
+        return Value;
+}
+
+//Ñ­»·ÏÞ·ùº¯Êý
+fp32 loop_fp32_constrain(fp32 Input, fp32 minValue, fp32 maxValue)
+{
+    if (maxValue < minValue)
+    {
+        return Input;
+    }
+
+    if (Input > maxValue)
+    {
+        fp32 len = maxValue - minValue;
+        while (Input > maxValue)
+        {
+            Input -= len;
+        }
+    }
+    else if (Input < minValue)
+    {
+        fp32 len = maxValue - minValue;
+        while (Input < minValue)
+        {
+            Input += len;
+        }
+    }
     return Input;
-  }
+}
 
-  if (Input > maxValue) {
-    fp32 len = maxValue - minValue;
-    while (Input > maxValue) {
-      Input -= len;
+//»¡¶È¸ñÊ½»¯Îª-PI~PI
+
+//½Ç¶È¸ñÊ½»¯Îª-180~180
+fp32 theta_format(fp32 Ang)
+{
+    return loop_fp32_constrain(Ang, -180.0f, 180.0f);
+}
+
+fp32 fast_atan2f(fp32 x, fp32 y)
+{
+    fp32 a = fminf(fabsf(x), fabsf(y)) / fmaxf(fabsf(x), fabsf(y));
+    fp32 s = a * a;
+    fp32 r = ((-0.0464964749f * s + 0.15931422f) * s - 0.327622764f) * s * a + a;
+    if (fabsf(y) > fabsf(x)){
+        r = 1.57079637f - r;
     }
-  } else if (Input < minValue) {
-    fp32 len = maxValue - minValue;
-    while (Input < minValue) {
-      Input += len;
+    if (x < 0){
+        r = 3.14159274f - r;
     }
-  }
-  return Input;
+    if (y < 0){
+        r = -r;
+    }
+    return r;
+}
+//kalman
+void Kalman_init(easy_kalman_t *kf,fp32 p ,fp32 q, fp32 r)
+{
+	kf->p=p;
+	kf->q=q;
+	kf->r=r;
 }
 
-// ï¿½ï¿½ï¿½È¸ï¿½Ê½ï¿½ï¿½Îª-PI~PI
-
-// ï¿½Ç¶È¸ï¿½Ê½ï¿½ï¿½Îª-180~180
-fp32 theta_format(fp32 Ang) { return loop_fp32_constrain(Ang, -180.0f, 180.0f); }
-
-fp32 fast_atan2f(fp32 x, fp32 y) {
-  fp32 a = fminf(fabsf(x), fabsf(y)) / fmaxf(fabsf(x), fabsf(y));
-  fp32 s = a * a;
-  fp32 r = ((-0.0464964749f * s + 0.15931422f) * s - 0.327622764f) * s * a + a;
-  if (fabsf(y) > fabsf(x)) {
-    r = 1.57079637f - r;
-  }
-  if (x < 0) {
-    r = 3.14159274f - r;
-  }
-  if (y < 0) {
-    r = -r;
-  }
-  return r;
+void Kalman_cacl(easy_kalman_t *kf,fp32 b,fp32 dt, fp32 z)
+{
+	kf->x_hat=kf->x+-b*dt;
+	kf->p_hat=kf->p+kf->q;
+	kf->k=kf->p_hat/(kf->p_hat+kf->r);
+	kf->p=(1-kf->k)*kf->p_hat;
+	kf->x=kf->x_hat+kf->k*(z-kf->x_hat);
 }
 
-void first_order_init(first_high_t *f, fp32 a, fp32 in) {
-  f->a = a;
-  f->in_last = in;
+void first_order_init(first_high_t *f,fp32 a,fp32 in)
+{
+	f->a=a;
+	f->in_last=in;
 }
 
-void first_order_calc(first_high_t *f, fp32 in) {
-  f->in = in;
-  f->out = f->a * f->out + f->a * (f->in - f->in_last);
-  f->in_last = f->in;
+void first_order_calc(first_high_t *f, fp32 in)
+{
+	f->in= in;
+	f->out=f->a*f->out+f->a*(f->in-f->in_last);
+	f->in_last=f->in;
 }
-
-//

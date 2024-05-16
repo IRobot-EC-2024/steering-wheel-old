@@ -3,56 +3,58 @@
 #include "struct_typedef.h"
 #include "main.h"
 
-typedef __PACKED_STRUCT {
-  fp32 input;         // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
-  fp32 out;           // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
-  fp32 min_value;     // ï¿½Þ·ï¿½ï¿½ï¿½Ð¡Öµ
-  fp32 max_value;     // ï¿½Þ·ï¿½ï¿½ï¿½ï¿½Öµ
-  fp32 frame_period;  // Ê±ï¿½ï¿½ï¿½ï¿½
-}
-ramp_function_source_t;
+typedef __PACKED_STRUCT
+{
+    fp32 input;        //ÊäÈëÊý¾Ý
+    fp32 out;          //Êä³öÊý¾Ý
+    fp32 min_value;    //ÏÞ·ù×îÐ¡Öµ
+    fp32 max_value;    //ÏÞ·ù×î´óÖµ
+    fp32 frame_period; //Ê±¼ä¼ä¸ô
+} ramp_function_source_t;
 
-typedef __PACKED_STRUCT {
-  fp32 input;         // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
-  fp32 out;           // ï¿½Ë²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
-  fp32 num[1];        // ï¿½Ë²ï¿½ï¿½ï¿½ï¿½ï¿½
-  fp32 frame_period;  // ï¿½Ë²ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Î» s
-}
-first_order_filter_type_t;
-// ï¿½ï¿½ï¿½Ù¿ï¿½ï¿½ï¿½
+typedef __PACKED_STRUCT
+{
+    fp32 input;        //ÊäÈëÊý¾Ý
+    fp32 out;          //ÂË²¨Êä³öµÄÊý¾Ý
+    fp32 num[1];       //ÂË²¨²ÎÊý
+    fp32 frame_period; //ÂË²¨µÄÊ±¼ä¼ä¸ô µ¥Î» s
+} first_order_filter_type_t;
+//¿ìËÙ¿ª·½
 extern fp32 invSqrt(fp32 num);
 
-// Ð±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½
+//Ð±²¨º¯Êý³õÊ¼»¯
 void ramp_init(ramp_function_source_t *ramp_source_type, fp32 frame_period, fp32 max, fp32 min);
 
-// Ð±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+//Ð±²¨º¯Êý¼ÆËã
 void ramp_calc(ramp_function_source_t *ramp_source_type, fp32 input);
-// Ò»ï¿½ï¿½ï¿½Ë²ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½
-extern void first_order_filter_init(first_order_filter_type_t *first_order_filter_type, fp32 frame_period,
-                                    const fp32 num[1]);
-void first_order_init(first_high_t *f, fp32 a, fp32 in);
-// Ò»ï¿½ï¿½ï¿½Ë²ï¿½ï¿½ï¿½ï¿½ï¿½
+//Ò»½×ÂË²¨³õÊ¼»¯
+extern void first_order_filter_init(first_order_filter_type_t *first_order_filter_type, fp32 frame_period, const fp32 num[1]);
+void first_order_init(first_high_t *f,fp32 a,fp32 in);
+//Ò»½×ÂË²¨¼ÆËã
 void first_order_calc(first_high_t *f, fp32 in);
 extern void first_order_filter_cali(first_order_filter_type_t *first_order_filter_type, fp32 input);
-// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+//¾ø¶ÔÏÞÖÆ
 extern void abs_limit(fp32 *num, fp32 Limit);
-// ï¿½Ð¶Ï·ï¿½ï¿½ï¿½Î»
+//ÅÐ¶Ï·ûºÅÎ»
 extern fp32 sign(fp32 value);
-// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+//¸¡µãËÀÇø
 extern fp32 fp32_deadline(fp32 Value, fp32 minValue, fp32 maxValue);
-// int26ï¿½ï¿½ï¿½ï¿½
+//int26ËÀÇø
 extern int16_t int16_deadline(int16_t Value, int16_t minValue, int16_t maxValue);
-// ï¿½Þ·ï¿½ï¿½ï¿½ï¿½ï¿½
+//ÏÞ·ùº¯Êý
 extern fp32 fp32_constrain(fp32 Value, fp32 minValue, fp32 maxValue);
-// ï¿½Þ·ï¿½ï¿½ï¿½ï¿½ï¿½
+//ÏÞ·ùº¯Êý
 extern int16_t int16_constrain(int16_t Value, int16_t minValue, int16_t maxValue);
-// Ñ­ï¿½ï¿½ï¿½Þ·ï¿½ï¿½ï¿½ï¿½ï¿½
+//Ñ­»·ÏÞ·ùº¯Êý
 extern fp32 loop_fp32_constrain(fp32 Input, fp32 minValue, fp32 maxValue);
-// ï¿½Ç¶ï¿½ ï¿½ï¿½ï¿½Þ·ï¿½ 180 ~ -180
+//½Ç¶È ¡ãÏÞ·ù 180 ~ -180
 extern fp32 theta_format(fp32 Ang);
 
-// ï¿½ï¿½ï¿½È¸ï¿½Ê½ï¿½ï¿½Îª-PI~PI
+//»¡¶È¸ñÊ½»¯Îª-PI~PI
 #define rad_format(Ang) loop_fp32_constrain((Ang), -PI, PI)
+
+void Kalman_init(easy_kalman_t *kf,fp32 p ,fp32 q, fp32 r);
+void Kalman_cacl(easy_kalman_t *kf,fp32 b,fp32 dt, fp32 z);
 
 extern fp32 fast_atan2f(fp32 x, fp32 y);
 

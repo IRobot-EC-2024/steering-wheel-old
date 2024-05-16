@@ -61,6 +61,7 @@ fp32 v_gain;
 bool_t single_shoot_flag = 0;  // ��������
 bool_t auto_fire_flag = 1;     // �Զ����𿪹�
 bool_t switch_flag = 0;        // ����л�����
+uint8_t No_noforce_flag=1;
 int16_t dealta_heat = 0;
 int32_t onelasttime = 0;
 int16_t onelastheat = 0;
@@ -139,11 +140,12 @@ void GimbalStateMachineUpdate(void) {
     return;
   }
   // ң�������߱���
-  if (Offline.Remote == DEVICE_OFFLINE) {
+  if (Offline.Remote == DEVICE_OFFLINE && Offline.Ft_Remote==DEVICE_OFFLINE) {
     if (Gimbal.StateMachine != GM_NO_FORCE) Gimbal.StateMachine = GM_NO_FORCE;
     return;
   }
 
+  if (Offline.Remote == DEVICE_ONLINE) {
   // ��̨״̬��
   switch (Remote.rc.s[0]) {
     // �Ҳ��˴����ϣ���̨��λ��������ģʽ����ģʽ�¿�Ħ����
@@ -190,6 +192,34 @@ void GimbalStateMachineUpdate(void) {
       }
       break;
   }
+  }
+  if(CheakKeyPressOnce(KEY_PRESSED_OFFSET_Z)){
+		No_noforce_flag=(No_noforce_flag+1)%2;
+	}
+	if(No_noforce_flag && Offline.Remote==DEVICE_OFFLINE)
+	{
+		Gimbal.StateMachine=GM_NO_FORCE;
+	}
+	else if(!No_noforce_flag && Offline.Remote==DEVICE_OFFLINE){
+		if (Gimbal.StateMachine == GM_NO_FORCE)
+		{
+            Gimbal.StateMachine = GM_INIT;
+            gimbal_init_countdown = 800;
+		}
+        else if (Gimbal.StateMachine == GM_INIT)
+        {
+			if (gimbal_init_countdown > 0){
+				gimbal_init_countdown--;
+			}
+            else{
+                Gimbal.StateMachine = GM_MATCH;
+            }
+		}
+        else{
+            Gimbal.StateMachine = GM_MATCH;
+        }
+		Remote.rc.s[1]=2;
+	}
 }
 
 uint8_t rote_flag = 0;
@@ -412,7 +442,7 @@ void GimbalCommandUpdate(void) {
 
   if (Gimbal.ControlMode == GM_MANUAL_OPERATE) {
     Gimbal.Command.Yaw += GIMBAL_CMD_YAW_KEYMAP;
-    Gimbal.Command.Pitch -= GIMBAL_CMD_PITCH_KEYMAP;
+    Gimbal.Command.Pitch += GIMBAL_CMD_PITCH_KEYMAP;
     Gimbal.Command.Yaw =
         loop_fp32_constrain(Gimbal.Command.Yaw, Gimbal.Imu.YawAngle - 180.0f, Gimbal.Imu.YawAngle + 180.0f);
     Gimbal.Command.Pitch = fp32_constrain(Gimbal.Command.Pitch, PITCH_MIN_ANGLE, PITCH_MAX_ANGLE);

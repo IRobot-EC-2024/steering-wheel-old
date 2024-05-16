@@ -1,12 +1,12 @@
 /**
   ****************************(C) COPYRIGHT 2019 DJI****************************
   * @file       pid.c/h
-  * @brief      pidÊµï¿½Öºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½PIDï¿½ï¿½ï¿½ãº¯ï¿½ï¿½ï¿½ï¿½
-  * @note
-  * @history    2021-7-23   ï¿½ï¿½ï¿½ï¿½ï¿½Ë´ï¿½ï¿½ï¿½pidï¿½Äºï¿½ï¿½ï¿½ï¿½Í½Ó¿ï¿½
+  * @brief      pidÊµÏÖº¯Êý£¬°üÀ¨³õÊ¼»¯£¬PID¼ÆËãº¯Êý£¬
+  * @note       
+  * @history    2021-7-23   Ôö¼ÓÁË´®¼¶pidµÄº¯ÊýºÍ½Ó¿Ú
   *  Version    Date            Author          Modification
-  *  V1.0.0     Dec-26-2018     RM              1. ï¿½ï¿½ï¿½
-  *  V2.0.0     Jly-23-2021     Qylann          1. ï¿½ï¿½ï¿½Ó²ï¿½ï¿½Öºï¿½ï¿½ï¿½
+  *  V1.0.0     Dec-26-2018     RM              1. Íê³É
+  *  V2.0.0     Jly-23-2021     Qylann          1. Ôö¼Ó²¿·Öº¯Êý
   @verbatim
   ==============================================================================
 
@@ -18,111 +18,115 @@
 #define PID_H
 #include "struct_typedef.h"
 
-enum PID_MODE { PID_POSITION = 0, PID_DELTA };
+
+enum PID_MODE
+{
+    PID_POSITION = 0,
+    PID_DELTA
+};
 
 /**
- * @brief          pid struct data init
- * @param[out]     pid: PID struct data point
- * @param[in]      mode: PID_POSITION: normal pid
- *                 PID_DELTA: delta pid
- * @param[in]      PID: 0: kp, 1: ki, 2:kd
- * @param[in]      max_out: pid max out
- * @param[in]      max_iout: pid max iout
- * @retval         none
- */
+  * @brief          pid struct data init
+  * @param[out]     pid: PID struct data point
+  * @param[in]      mode: PID_POSITION: normal pid
+  *                 PID_DELTA: delta pid
+  * @param[in]      PID: 0: kp, 1: ki, 2:kd
+  * @param[in]      max_out: pid max out
+  * @param[in]      max_iout: pid max iout
+  * @retval         none
+  */
 /**
- * @brief          pid struct data init
- * @param[out]     pid: PIDï¿½á¹¹ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½
- * @param[in]      mode: PID_POSITION:ï¿½ï¿½Í¨PID
- *                 PID_DELTA: ï¿½ï¿½ï¿½PID
- * @param[in]      PID: 0: kp, 1: ki, 2:kd
- * @param[in]      max_out: pidï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
- * @param[in]      max_iout: pidï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
- * @retval         none
- */
+  * @brief          pid struct data init
+  * @param[out]     pid: PID½á¹¹Êý¾ÝÖ¸Õë
+  * @param[in]      mode: PID_POSITION:ÆÕÍ¨PID
+  *                 PID_DELTA: ²î·ÖPID
+  * @param[in]      PID: 0: kp, 1: ki, 2:kd
+  * @param[in]      max_out: pid×î´óÊä³ö
+  * @param[in]      max_iout: pid×î´ó»ý·ÖÊä³ö
+  * @retval         none
+  */
 extern void PID_init(pid_type_def *pid, uint8_t mode, const fp32 PID[3], fp32 max_out, fp32 max_iout);
 
 /**
- * @brief          cascade pid struct data init
- * @param[out]     c_pid: cascade PID struct data point
- * @param[in]      oPID: 0: kp, 1: ki, 2:kd
- * @param[in]      iPID: 0: kp, 1: ki, 2:kd
- * @param[in]      oPID_max_out: outside pid max out
- * @param[in]      oPID_max_iout: outside pid max iout
- * @param[in]      iPID_max_out: inside pid max out
- * @param[in]      iPID_max_iout: inside pid max iout
- * @retval         none
- */
+  * @brief          cascade pid struct data init
+  * @param[out]     c_pid: cascade PID struct data point
+  * @param[in]      oPID: 0: kp, 1: ki, 2:kd
+  * @param[in]      iPID: 0: kp, 1: ki, 2:kd
+  * @param[in]      oPID_max_out: outside pid max out
+  * @param[in]      oPID_max_iout: outside pid max iout
+  * @param[in]      iPID_max_out: inside pid max out
+  * @param[in]      iPID_max_iout: inside pid max iout
+  * @retval         none
+  */
 /**
- * @brief          cascade pid struct data init
- * @param[out]     c_pid: ï¿½ï¿½ï¿½PIDï¿½á¹¹ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½
- * @param[in]      oPID: 0: kp, 1: ki, 2:kd
- * @param[in]      iPID: 0: kp, 1: ki, 2:kd
- * @param[in]      oPID_max_out: ï¿½â»·pidï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
- * @param[in]      oPID_max_iout: ï¿½â»·pidï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
- * @param[in]      iPID_max_out: ï¿½Ú»ï¿½pidï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
- * @param[in]      iPID_max_iout: ï¿½Ú»ï¿½pidï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
- * @retval         none
- */
-extern void cascade_PID_init(cascade_pid_t *c_pid, const fp32 oPID[3], const fp32 iPID[3], fp32 oPID_max_out,
-                             fp32 oPID_max_iout, fp32 iPID_max_out, fp32 iPID_max_iout);
+  * @brief          cascade pid struct data init
+  * @param[out]     c_pid: ²î·ÖPID½á¹¹Êý¾ÝÖ¸Õë
+  * @param[in]      oPID: 0: kp, 1: ki, 2:kd
+  * @param[in]      iPID: 0: kp, 1: ki, 2:kd
+  * @param[in]      oPID_max_out: Íâ»·pid×î´óÊä³ö
+  * @param[in]      oPID_max_iout: Íâ»·pid×î´ó»ý·ÖÊä³ö
+  * @param[in]      iPID_max_out: ÄÚ»·pid×î´óÊä³ö
+  * @param[in]      iPID_max_iout: ÄÚ»·pid×î´ó»ý·ÖÊä³ö
+  * @retval         none
+  */
+extern void cascade_PID_init(cascade_pid_t *c_pid, const fp32 oPID[3], const fp32 iPID[3], fp32 oPID_max_out, fp32 oPID_max_iout, fp32 iPID_max_out, fp32 iPID_max_iout);
 
 /**
- * @brief          pid calculate
- * @param[out]     pid: PID struct data point
- * @param[in]      ref: feedback data
- * @param[in]      set: set point
- * @retval         pid out
- */
+  * @brief          pid calculate 
+  * @param[out]     pid: PID struct data point
+  * @param[in]      ref: feedback data 
+  * @param[in]      set: set point
+  * @retval         pid out
+  */
 /**
- * @brief          pidï¿½ï¿½ï¿½ï¿½
- * @param[out]     pid: PIDï¿½á¹¹ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½
- * @param[in]      ref: ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
- * @param[in]      set: ï¿½è¶¨Öµ
- * @retval         pidï¿½ï¿½ï¿½
- */
+  * @brief          pid¼ÆËã
+  * @param[out]     pid: PID½á¹¹Êý¾ÝÖ¸Õë
+  * @param[in]      ref: ·´À¡Êý¾Ý
+  * @param[in]      set: Éè¶¨Öµ
+  * @retval         pidÊä³ö
+  */
 extern fp32 PID_calc(pid_type_def *pid, fp32 ref, fp32 set);
 
 /**
- * @brief          cascade pid calculate
- * @param[out]     c_pid: cascade PID struct data point
- * @param[in]      o_ref: outside feedback data
- * @param[in]      i_ref: inside feedback data
- * @param[in]      s_set: outside set point
- * @retval         cascade pid out
- */
+  * @brief          cascade pid calculate 
+  * @param[out]     c_pid: cascade PID struct data point
+  * @param[in]      o_ref: outside feedback data 
+  * @param[in]      i_ref: inside feedback data 
+  * @param[in]      s_set: outside set point
+  * @retval         cascade pid out
+  */
 /**
- * @brief          ï¿½ï¿½ï¿½pidï¿½ï¿½ï¿½ï¿½
- * @param[out]     c_pid: ï¿½ï¿½ï¿½PIDï¿½á¹¹ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½
- * @param[in]      o_ref: ï¿½â»·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
- * @param[in]      i_ref: ï¿½Ú»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
- * @param[in]      s_set: ï¿½â»·ï¿½è¶¨Öµ
- * @retval         ï¿½ï¿½ï¿½pidï¿½ï¿½ï¿½
- */
+  * @brief          ²î·Öpid¼ÆËã
+  * @param[out]     c_pid: ²î·ÖPID½á¹¹Êý¾ÝÖ¸Õë
+  * @param[in]      o_ref: Íâ»··´À¡Êý¾Ý
+  * @param[in]      i_ref: ÄÚ»··´À¡Êý¾Ý
+  * @param[in]      s_set: Íâ»·Éè¶¨Öµ
+  * @retval         ²î·ÖpidÊä³ö
+  */
 extern fp32 cascade_PID_calc(cascade_pid_t *c_pid, fp32 o_ref, fp32 i_ref, fp32 o_set);
 
 /**
- * @brief          pid out clear
- * @param[out]     pid: PID struct data point
- * @retval         none
- */
+  * @brief          pid out clear
+  * @param[out]     pid: PID struct data point
+  * @retval         none
+  */
 /**
- * @brief          pid ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
- * @param[out]     pid: PIDï¿½á¹¹ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½
- * @retval         none
- */
+  * @brief          pid Êä³öÇå³ý
+  * @param[out]     pid: PID½á¹¹Êý¾ÝÖ¸Õë
+  * @retval         none
+  */
 extern void PID_clear(pid_type_def *pid);
 
 /**
- * @brief          cascade pid out clear
- * @param[out]     c_pid: cascade PID struct data point
- * @retval         none
- */
+  * @brief          cascade pid out clear
+  * @param[out]     c_pid: cascade PID struct data point
+  * @retval         none
+  */
 /**
- * @brief          ï¿½ï¿½ï¿½pidï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
- * @param[out]     c_pid: ï¿½ï¿½ï¿½PIDï¿½á¹¹ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½
- * @retval         none
- */
+  * @brief          ²î·ÖpidÊä³öÇå³ý
+  * @param[out]     c_pid: ²î·ÖPID½á¹¹Êý¾ÝÖ¸Õë
+  * @retval         none
+  */
 extern void cascade_PID_clear(cascade_pid_t *c_pid);
 
 #endif

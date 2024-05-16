@@ -10,7 +10,7 @@
       <TargetName>Template</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pCCUsed>6190000::V6.19::ARMCLANG</pCCUsed>
+      <pCCUsed>6160000::V6.16::ARMCLANG</pCCUsed>
       <uAC6>1</uAC6>
       <TargetOption>
         <TargetCommonOption>
@@ -134,11 +134,11 @@
             <RunIndependent>0</RunIndependent>
             <UpdateFlashBeforeDebugging>1</UpdateFlashBeforeDebugging>
             <Capability>1</Capability>
-            <DriverSelection>4101</DriverSelection>
+            <DriverSelection>4096</DriverSelection>
           </Flash1>
           <bUseTDR>1</bUseTDR>
           <Flash2>BIN\UL2CM3.DLL</Flash2>
-          <Flash3></Flash3>
+          <Flash3>"" ()</Flash3>
           <Flash4></Flash4>
           <pFcarmOut></pFcarmOut>
           <pFcarmGrp></pFcarmGrp>
@@ -313,7 +313,7 @@
           </ArmAdsMisc>
           <Cads>
             <interw>1</interw>
-            <Optim>2</Optim>
+            <Optim>1</Optim>
             <oTime>0</oTime>
             <SplitLS>0</SplitLS>
             <OneElfS>1</OneElfS>
@@ -339,7 +339,7 @@
               <MiscControls></MiscControls>
               <Define>USE_HAL_DRIVER,STM32F407xx,USE_HAL_DRIVER,STM32F407xx,ARM_MATH_CM4,ARM_MATH_ROUNDING,ARM_MATH_MATRIX_CHECK</Define>
               <Undefine></Undefine>
-              <IncludePath>../Core/Inc;../Drivers/STM32F4xx_HAL_Driver/Inc;../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy;../Middlewares/Third_Party/FreeRTOS/Source/include;../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS;../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F;../Drivers/CMSIS/Device/ST/STM32F4xx/Include;../Drivers/CMSIS/Include;../algorithm/DSP;../algorithm/LIB;../algorithm/Mahony;../algorithm/Memory;../algorithm/PID;../application;../bsp;..\device;..\Config;../algorithm/kalman;../Drivers/CMSIS/DSP;../algorithm;../USB_DEVICE/App;../USB_DEVICE/Target;../Middlewares/ST/STM32_USB_Device_Library/Core/Inc;../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc;..\algorithm\IMU_KF</IncludePath>
+              <IncludePath>../Core/Inc;../Drivers/STM32F4xx_HAL_Driver/Inc;../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy;../Middlewares/Third_Party/FreeRTOS/Source/include;../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS;../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F;../Drivers/CMSIS/Device/ST/STM32F4xx/Include;../Drivers/CMSIS/Include;../algorithm/DSP;../algorithm/LIB;../algorithm/Mahony;../algorithm/Memory;../algorithm/PID;../application;../bsp;..\device;..\Config;../Drivers/CMSIS/DSP;../algorithm;../USB_DEVICE/App;../USB_DEVICE/Target;../Middlewares/ST/STM32_USB_Device_Library/Core/Inc;../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc;..\algorithm\IMU_KF</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -817,9 +817,9 @@
               <FilePath>..\algorithm\IMU_KF\QuaternionEKF.c</FilePath>
             </File>
             <File>
-              <FileName>QuaternionEKF.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\algorithm\IMU_KF\QuaternionEKF.h</FilePath>
+              <FileName>CRC8_CRC16.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\algorithm\CRC8_CRC16.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -897,9 +897,14 @@
               <FilePath>..\device\Usb.c</FilePath>
             </File>
             <File>
-              <FileName>Usb.h</FileName>
+              <FileName>Fs_remote.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\device\Fs_remote.c</FilePath>
+            </File>
+            <File>
+              <FileName>Fs_remote.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\device\Usb.h</FilePath>
+              <FilePath>..\device\Fs_remote.h</FilePath>
             </File>
           </Files>
         </Group>
