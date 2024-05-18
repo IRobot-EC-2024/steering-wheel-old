@@ -250,9 +250,9 @@ void ChassisCommandUpdate() {
         Chassis.wz = 0.001 * Chassis.wz / Fabs(Chassis.wz);
       }
     } else if (Chassis.Mode == ROTING) {
-      Chassis.wz = sin(v_gain / 4.2) * 2.2;
+      Chassis.wz = sin(v_gain / 4.2) * 2.2;  // shift
       if ((PTZ.ChassisStatueRequest & 64) == 64) {
-        Chassis.wz = sin(v_gain / 4.2) * 3.5;
+        Chassis.wz = sin(v_gain / 4.2) * 3.5;  // ctrl
         angle_minus = -YawMotorMeasure.angle + FollowAngle - YawMotorMeasure.speed_rpm * 0.58;
       } else
         angle_minus = -YawMotorMeasure.angle + FollowAngle - YawMotorMeasure.speed_rpm * 0.6;
@@ -269,6 +269,9 @@ void ChassisCommandUpdate() {
       Chassis.vy = ((PTZ.FBSpeed / 32767.0f) * sin(angle_minus / 180.0 * PI) +
                     (PTZ.LRSpeed / 32767.0f) * cos(angle_minus / 180.0 * PI));
       Chassis.wz = 0.0;
+    }
+    if (power_heat_data_t.chassis_power > Power_Max) {
+      Chassis.wz = sin(v_gain / 4.2) * 1.f;  // 如果小陀螺功率过大，就限制到一个较小的转速
     }
   }
   /********************************	舵电机解算      ***********************/
