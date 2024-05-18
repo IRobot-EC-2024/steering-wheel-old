@@ -34,8 +34,8 @@ typedef struct {
   fp32 Pout;
   fp32 Iout;
   fp32 Dout;
-  fp32 Dbuf[3];   // ΢���� 0���� 1��һ�� 2���ϴ�
-  fp32 error[3];  // ����� 0���� 1��һ�� 2���ϴ�
+  fp32 Dbuf[3];
+  fp32 error[3];
 
 } pid_type_def;
 

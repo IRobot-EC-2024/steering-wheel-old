@@ -61,7 +61,7 @@ fp32 v_gain;
 bool_t single_shoot_flag = 0;  // ��������
 bool_t auto_fire_flag = 1;     // �Զ����𿪹�
 bool_t switch_flag = 0;        // ����л�����
-uint8_t No_noforce_flag=1;
+uint8_t No_noforce_flag = 1;
 int16_t dealta_heat = 0;
 int32_t onelasttime = 0;
 int16_t onelastheat = 0;
@@ -140,86 +140,80 @@ void GimbalStateMachineUpdate(void) {
     return;
   }
   // ң�������߱���
-  if (Offline.Remote == DEVICE_OFFLINE && Offline.Ft_Remote==DEVICE_OFFLINE) {
+  if (Offline.Remote == DEVICE_OFFLINE && Offline.Ft_Remote == DEVICE_OFFLINE) {
     if (Gimbal.StateMachine != GM_NO_FORCE) Gimbal.StateMachine = GM_NO_FORCE;
     return;
   }
 
-  if (Offline.Remote == DEVICE_ONLINE) {
-  // ��̨״̬��
-  switch (Remote.rc.s[0]) {
-    // �Ҳ��˴����ϣ���̨��λ��������ģʽ����ģʽ�¿�Ħ����
-    case RC_SW_UP:
-      if (Gimbal.StateMachine == GM_NO_FORCE) {
-        Gimbal.StateMachine = GM_INIT;
-        gimbal_init_countdown = 800;
-      } else if (Gimbal.StateMachine == GM_INIT) {
-        if (gimbal_init_countdown > 0) {
-          gimbal_init_countdown--;
+  if (Offline.Remote == DEVICE_ONLINE) {  // 现在使用图传链路控制，所以禁用遥控器拨杆
+    // ��̨״̬��
+    switch (Remote.rc.s[0]) {
+      // �Ҳ��˴����ϣ���̨��λ��������ģʽ����ģʽ�¿�Ħ����
+      case RC_SW_UP:
+        if (Gimbal.StateMachine == GM_NO_FORCE) {
+          Gimbal.StateMachine = GM_INIT;
+          gimbal_init_countdown = 800;
+        } else if (Gimbal.StateMachine == GM_INIT) {
+          if (gimbal_init_countdown > 0) {
+            gimbal_init_countdown--;
+          } else {
+            Gimbal.StateMachine = GM_MATCH;  // ����ģʽ
+          }
         } else {
-          Gimbal.StateMachine = GM_MATCH;  // ����ģʽ
+          Gimbal.StateMachine = GM_MATCH;
         }
-      } else {
-        Gimbal.StateMachine = GM_MATCH;
-      }
-      break;
+        break;
 
-    // �Ҳ��˴��м䣬��̨��λ��������ģʽ
-    case RC_SW_MID:
-      if (Gimbal.StateMachine == GM_NO_FORCE) {
-        Gimbal.StateMachine = GM_INIT;
-        gimbal_init_countdown = 800;
-      } else if (Gimbal.StateMachine == GM_INIT) {
-        if (gimbal_init_countdown > 0) {
-          gimbal_init_countdown--;
+      // �Ҳ��˴��м䣬��̨��λ��������ģʽ
+      case RC_SW_MID:
+        if (Gimbal.StateMachine == GM_NO_FORCE) {
+          Gimbal.StateMachine = GM_INIT;
+          gimbal_init_countdown = 800;
+        } else if (Gimbal.StateMachine == GM_INIT) {
+          if (gimbal_init_countdown > 0) {
+            gimbal_init_countdown--;
+          } else {
+            Gimbal.StateMachine = GM_TEST;
+          }
         } else {
           Gimbal.StateMachine = GM_TEST;
         }
-      } else {
-        Gimbal.StateMachine = GM_TEST;
-      }
-      break;
+        break;
 
-    // �Ҳ��˴����£���ң�������ݳ�����̨��������ģʽ
-    case RC_SW_DOWN:
-      if (Gimbal.StateMachine != GM_NO_FORCE) {
-        Gimbal.StateMachine = GM_NO_FORCE;
-      }
-      break;
-    default:
-      if (Gimbal.StateMachine != GM_NO_FORCE) {
-        Gimbal.StateMachine = GM_NO_FORCE;
-      }
-      break;
-  }
-  }
-  if(CheakKeyPressOnce(KEY_PRESSED_OFFSET_Z)){
-		No_noforce_flag=(No_noforce_flag+1)%2;
-	}
-	if(No_noforce_flag && Offline.Remote==DEVICE_OFFLINE)
-	{
-		Gimbal.StateMachine=GM_NO_FORCE;
-	}
-	else if(!No_noforce_flag && Offline.Remote==DEVICE_OFFLINE){
-		if (Gimbal.StateMachine == GM_NO_FORCE)
-		{
-            Gimbal.StateMachine = GM_INIT;
-            gimbal_init_countdown = 800;
-		}
-        else if (Gimbal.StateMachine == GM_INIT)
-        {
-			if (gimbal_init_countdown > 0){
-				gimbal_init_countdown--;
-			}
-            else{
-                Gimbal.StateMachine = GM_MATCH;
-            }
-		}
-        else{
-            Gimbal.StateMachine = GM_MATCH;
+      // �Ҳ��˴����£���ң�������ݳ�����̨��������ģʽ
+      case RC_SW_DOWN:
+        if (Gimbal.StateMachine != GM_NO_FORCE) {
+          Gimbal.StateMachine = GM_NO_FORCE;
         }
-		Remote.rc.s[1]=2;
-	}
+        break;
+      default:
+        if (Gimbal.StateMachine != GM_NO_FORCE) {
+          Gimbal.StateMachine = GM_NO_FORCE;
+        }
+        break;
+    }
+  }
+
+  if (CheakKeyPressOnce(KEY_PRESSED_OFFSET_Z)) {
+    No_noforce_flag = (No_noforce_flag + 1) % 2;
+  }
+  if (No_noforce_flag && Offline.Remote == DEVICE_OFFLINE) {
+    Gimbal.StateMachine = GM_NO_FORCE;
+  } else if (!No_noforce_flag && Offline.Remote == DEVICE_OFFLINE) {
+    if (Gimbal.StateMachine == GM_NO_FORCE) {
+      Gimbal.StateMachine = GM_INIT;
+      gimbal_init_countdown = 800;
+    } else if (Gimbal.StateMachine == GM_INIT) {
+      if (gimbal_init_countdown > 0) {
+        gimbal_init_countdown--;
+      } else {
+        Gimbal.StateMachine = GM_MATCH;
+      }
+    } else {
+      Gimbal.StateMachine = GM_MATCH;
+    }
+    Remote.rc.s[1] = 2;
+  }
 }
 
 uint8_t rote_flag = 0;
@@ -275,7 +269,6 @@ void GimbalControlModeUpdate(void) {
   if (Gimbal.StateMachine == GM_NO_CONTROL) Gimbal.ControlMode = GM_NO_CONTROL;
 }
 
-// qylann: ���´���̫��
 uint8_t big_rune_flag = 0;
 uint8_t small_rune_flag = 0;
 extern GimbalRequestState_t RequestStatePacket;
@@ -283,7 +276,7 @@ void GimbalFireModeUpdate(void) {
   // �Զ����𿪹�,key Q
   if (FIRE_MODE_KEYMAP) auto_fire_flag = (auto_fire_flag + 1) % 2;
 
-  // ��������,key B
+  // ��������,key B 
   if (big_rune_flag || small_rune_flag)
     single_shoot_flag = 1;
   else {
@@ -347,7 +340,6 @@ void GimbalFireModeUpdate(void) {
   }
 }
 
-// qylann: "     "
 
 GimbalControlMode_e CMthis = GM_NO_CONTROL;
 GimbalControlMode_e CMlast = GM_NO_CONTROL;

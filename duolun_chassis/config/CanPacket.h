@@ -6,7 +6,6 @@
 #include "struct_typedef.h"
 #include "RefereeBehaviour.h"
 
-// ����Ŀ������µ��������ݰ�
 #define AIMBOT_POSITION_ID 0x141
 
 typedef enum {
