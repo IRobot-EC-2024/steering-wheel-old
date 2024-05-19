@@ -49,6 +49,8 @@ OfflineMonitor_t OfflineMonitor;
 extern pid_type_def left_back_6020_position_pid;
 extern uint8_t chassis_limit_update_flag;
 extern ext_game_robot_pos_t game_robot_pos_t;
+extern ext_game_robot_status_t Referee;
+
 void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan) {
   HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &rx_header, rx_data);
 
@@ -203,11 +205,6 @@ extern first_order_filter_type_t wz_filter;
 void TimerTaskLoop1000Hz() {
   CommuniteOfflineCounterUpdate();
   CommuniteOfflineStateUpdate();
-
-  // DMA_printf("%f,%d\r\n",power_heat_data_t.chassis_power,power_heat_data_t.chassis_power_buffer);
-  // DMA_printf("%f,%f\r\n",wz_filter.out,Chassis.wz);
-
-  // t0++;
 }
 
 void TimerTaskLoop500Hz_1() {}
@@ -217,11 +214,14 @@ void TimerTaskLoop500Hz_2() {}
 void TimerTaskLoop100Hz() {
   CMS_BUFFER_SEND(power_heat_data_t.buffer_energy);
   cms_send_period = 0;
-  CMS_POWER_SEND(robot_state.chassis_power_limit, 300, 150, 1);
+  if (Referee.power_management_chassis_output == 0) {
+    CMS_POWER_SEND(robot_state.chassis_power_limit, 300, 150, 0);
+  } else
+    CMS_POWER_SEND(robot_state.chassis_power_limit, 300, 150, 1);
   uint8_t message[2];
   message[0] = robot_state.chassis_power_limit >> 8;
   message[0] = robot_state.chassis_power_limit;
-  DMA_printf("s:%f,%f,%f,%f\r\n", Chassis.WheelAngle[0], Chassis.WheelAngle[1], Chassis.WheelAngle[2], Chassis.WheelAngle[3]);
+  DMA_printf("s:%d,%f\r\n", power_heat_data_t.buffer_energy, power_heat_data_t.chassis_power);
 }
 
 void CommuniteOfflineCounterUpdate(void) {
