@@ -217,6 +217,7 @@ void ChassisModeUpdate() {
     Chassis.CapKey = 0;
 }
 
+fp32 spin_angle_compensation = 0.37f;
 void ChassisCommandUpdate() {
   // 无力或者云台离线
   if (Chassis.Mode == NOFORCE || Offline.PTZnode == 1) {
@@ -250,12 +251,19 @@ void ChassisCommandUpdate() {
         Chassis.wz = 0.001 * Chassis.wz / Fabs(Chassis.wz);
       }
     } else if (Chassis.Mode == ROTING) {
-      Chassis.wz = sin(v_gain / 4.2) * 2.2;  // shift
+      if (Power_Max <= 80) {
+        Chassis.wz = sin(v_gain / 4.2) * 3.8f;  // shift慢转
+      } else {
+        Chassis.wz = sin(1.25f / 4.2) * 3.8f;  // 如果小陀螺功率过大，就限制到一个较小的转速
+      }
       if ((PTZ.ChassisStatueRequest & 64) == 64) {
-        Chassis.wz = sin(v_gain / 4.2) * 3.5;  // ctrl
-        angle_minus = -YawMotorMeasure.angle + FollowAngle - YawMotorMeasure.speed_rpm * 0.58;
-      } else
-        angle_minus = -YawMotorMeasure.angle + FollowAngle - YawMotorMeasure.speed_rpm * 0.6;
+        if (Power_Max <= 80) {
+          Chassis.wz = sin(v_gain / 4.2) * 4.5f;  // ctrl快转
+        } else {
+          Chassis.wz = sin(1.25f / 4.2) * 4.5f;  // 如果小陀螺功率过大，就限制到一个较小的转速
+        }
+      }
+      angle_minus = -YawMotorMeasure.angle + FollowAngle - YawMotorMeasure.speed_rpm * spin_angle_compensation;
       Chassis.vx = ((PTZ.FBSpeed / 32767.0f) * cos(angle_minus / 180.0 * PI) -
                     (PTZ.LRSpeed / 32767.0f) * sin(angle_minus / 180.0 * PI)) *
                    v_gain / 1.8;  //* (1.0f + Chassis.Power_Proportion /Power_Max );
@@ -269,9 +277,6 @@ void ChassisCommandUpdate() {
       Chassis.vy = ((PTZ.FBSpeed / 32767.0f) * sin(angle_minus / 180.0 * PI) +
                     (PTZ.LRSpeed / 32767.0f) * cos(angle_minus / 180.0 * PI));
       Chassis.wz = 0.0;
-    }
-    if (power_heat_data_t.chassis_power > Power_Max) {
-      Chassis.wz = sin(v_gain / 4.2) * 1.f;  // 如果小陀螺功率过大，就限制到一个较小的转速
     }
   }
   /********************************	舵电机解算      ***********************/
