@@ -43,7 +43,7 @@ extern UART_HandleTypeDef huart6;
 #define DMA_printf(...)  HAL_UART_Transmit_DMA(&huart1,\
 																				(uint8_t  *)u1_buf,\
 																				sprintf((char*)u1_buf,__VA_ARGS__))
-extern uint8_t u1_buf[32];
+extern uint8_t u1_buf[64];
 
 /* USER CODE END Private defines */
 

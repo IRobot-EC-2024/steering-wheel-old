@@ -45,7 +45,7 @@
 #define SPEED_6020_KI 0.0f
 #define SPEED_6020_KD 0.0f
 
-#define POSITION_6020_KP 5.10f
+#define POSITION_6020_KP 4.50f
 #define POSITION_6020_KI 0.00156f
 #define POSITION_6020_KD 0.0020f
 

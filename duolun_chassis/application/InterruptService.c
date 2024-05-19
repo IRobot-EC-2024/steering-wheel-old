@@ -9,7 +9,7 @@
 #include "CalculateThread.h"
 #include "CMS.h"
 #include "bsp_can.h"
-extern uint8_t u1_buf[32];
+extern uint8_t u1_buf[64];
 extern EulerSystemMeasure_t Imu;
 
 double t00 = 0, tk[4], t01 = 0, t02 = 0, ct = 0, ct2 = 0, t03 = 0;
@@ -221,7 +221,7 @@ void TimerTaskLoop100Hz() {
   uint8_t message[2];
   message[0] = robot_state.chassis_power_limit >> 8;
   message[0] = robot_state.chassis_power_limit;
-  DMA_printf("%f\r\n", Chassis.Motor3508[0].speed);
+  DMA_printf("s:%f,%f,%f,%f\r\n", Chassis.WheelAngle[0], Chassis.WheelAngle[1], Chassis.WheelAngle[2], Chassis.WheelAngle[3]);
 }
 
 void CommuniteOfflineCounterUpdate(void) {

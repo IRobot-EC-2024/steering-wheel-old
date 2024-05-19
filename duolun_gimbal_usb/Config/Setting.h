@@ -84,8 +84,8 @@
 #define YAW_MOTOR_DIRECTION         1
 #define PITCH_MOTOR_DIRECTION       -1
 #define ROTOR_MOTOR_DIRECTION       1
-#define AMMO_LEFT_MOTOR_DIRECTION   -1
-#define AMMO_RIGHT_MOTOR_DIRECTION  1
+#define AMMO_LEFT_MOTOR_DIRECTION   1
+#define AMMO_RIGHT_MOTOR_DIRECTION  -1
 // 云台YAW轴零点和俯仰限幅
 #define YAW_ZERO_ECDANGLE           -2.5//180.0f-142.5f//21.4f
 #define PITCH_MIN_ANGLE             -20.0f//-27.0f//-24.0f//-26.0f
