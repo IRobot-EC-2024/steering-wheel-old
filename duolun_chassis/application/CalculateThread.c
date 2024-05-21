@@ -495,7 +495,7 @@ uint8_t chassis_powerloop(Chassis_t *Chassis) {
 
   lijupower = he + START_POWER;
 
-  if (CMS_Data.cms_cap_v <= 15 || cms_offline_counter > 500 || power_heat_data_t.buffer_energy < 40) {
+  if (CMS_Data.cms_cap_v <= 15 || cms_offline_counter > 500 || power_heat_data_t.buffer_energy < 20) {
     power_flag = 0;
     cms_flag = 0;
   } else {
@@ -514,13 +514,13 @@ uint8_t chassis_powerloop(Chassis_t *Chassis) {
     Power_Max += 50;
   }
   if (power_flag == 0) {
-    if (power_heat_data_t.buffer_energy < 35 && power_heat_data_t.buffer_energy >= 30) {
+    if (power_heat_data_t.buffer_energy < 20 && power_heat_data_t.buffer_energy >= 18) {
       Plimit = 0.6;
       // power_scale = (Power_Max-2) / lijupower;
-    } else if (power_heat_data_t.buffer_energy < 30 && power_heat_data_t.buffer_energy >= 20) {
+    } else if (power_heat_data_t.buffer_energy < 18 && power_heat_data_t.buffer_energy >= 15) {
       Plimit = 0.3;
       // power_scale = (Power_Max-2) / lijupower;
-    } else if (power_heat_data_t.buffer_energy < 20 && power_heat_data_t.buffer_energy >= 10 && cms_flag == 0) {
+    } else if (power_heat_data_t.buffer_energy < 15 && power_heat_data_t.buffer_energy >= 10 && cms_flag == 0) {
       Plimit = 0.1;
       // power_scale = (Power_Max-2) / lijupower;
     } else if (power_heat_data_t.buffer_energy < 10 && power_heat_data_t.buffer_energy >= 0) {

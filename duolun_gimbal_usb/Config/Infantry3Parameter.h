@@ -5,8 +5,8 @@
 
 #define GM6020_MAX_OUTPUT                       30000
 #define GM6020_MAX_IOUTPUT                      8000
-#define M3508_MAX_OUTPUT                        16384
-#define M3508_MAX_IOUTPUT                       6000
+#define M3508_MAX_OUTPUT                        8000
+#define M3508_MAX_IOUTPUT                       2000
 #define M2006_MAX_OUTPUT                        10000
 #define M2006_MAX_IOUTPUT                       50007
 
@@ -70,69 +70,69 @@ fp32 ROTOR_BACK[3] = { ROTOR_BACK_KP, ROTOR_BACK_KI, ROTOR_BACK_KD };
 
 
 
-//  ÎÞÁ¦ÔÆÌ¨²ÎÊý
-//  YAWÖá½ÇËÙ¶È»·
+//  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì¨ï¿½ï¿½ï¿½ï¿½
+//  YAWï¿½ï¿½ï¿½ï¿½Ù¶È»ï¿½
 #define YAW_SPEED_NO_FORCE_KP                   0.0f
 #define YAW_SPEED_NO_FORCE_KI                   0.0f
 #define YAW_SPEED_NO_FORCE_KD                   0.0f
 fp32 YAW_SPEED_NO_FORCE[3] = { YAW_SPEED_NO_FORCE_KP, YAW_SPEED_NO_FORCE_KI, YAW_SPEED_NO_FORCE_KD };
-//  YAWÖá½Ç¶È»·
+//  YAWï¿½ï¿½Ç¶È»ï¿½
 #define YAW_ANGLE_NO_FORCE_KP                   0.0f
 #define YAW_ANGLE_NO_FORCE_KI                   0.0f
 #define YAW_ANGLE_NO_FORCE_KD                   0.0f
 fp32 YAW_ANGLE_NO_FORCE[3] = { YAW_ANGLE_NO_FORCE_KP, YAW_ANGLE_NO_FORCE_KI, YAW_ANGLE_NO_FORCE_KD };
-//  PITCHÖá½ÇËÙ¶È»·
+//  PITCHï¿½ï¿½ï¿½ï¿½Ù¶È»ï¿½
 #define PITCH_SPEED_NO_FORCE_KP                 0.0f
 #define PITCH_SPEED_NO_FORCE_KI                 0.0f
 #define PITCH_SPEED_NO_FORCE_KD                 0.0f
 fp32 PITCH_SPEED_NO_FORCE[3] = { PITCH_SPEED_NO_FORCE_KP, PITCH_SPEED_NO_FORCE_KI, PITCH_SPEED_NO_FORCE_KD };
-//  PITCHÖá½Ç¶È»·
+//  PITCHï¿½ï¿½Ç¶È»ï¿½
 #define PITCH_ANGLE_NO_FORCE_KP                 0.0f
 #define PITCH_ANGLE_NO_FORCE_KI                 0.0f
 #define PITCH_ANGLE_NO_FORCE_KD                 0.0f
 fp32 PITCH_ANGLE_NO_FORCE[3] = { PITCH_ANGLE_NO_FORCE_KP, PITCH_ANGLE_NO_FORCE_KI, PITCH_ANGLE_NO_FORCE_KD };
 
 
-//  ¹éÎ»ÔÆÌ¨²ÎÊý
-//  YAWÖá½ÇËÙ¶È»·
+//  ï¿½ï¿½Î»ï¿½ï¿½Ì¨ï¿½ï¿½ï¿½ï¿½
+//  YAWï¿½ï¿½ï¿½ï¿½Ù¶È»ï¿½
 #define YAW_SPEED_RESET_POSITION_KP             160.0f//36.0f
 #define YAW_SPEED_RESET_POSITION_KI             0.0f
 #define YAW_SPEED_RESET_POSITION_KD             0.0f
 fp32 YAW_SPEED_RESET_POSITION[3] = { YAW_SPEED_RESET_POSITION_KP, YAW_SPEED_RESET_POSITION_KI, YAW_SPEED_RESET_POSITION_KD };
-//  YAWÖá½Ç¶È»·
+//  YAWï¿½ï¿½Ç¶È»ï¿½
 #define YAW_ANGLE_RESET_POSITION_KP             28.0f//18.0f
 #define YAW_ANGLE_RESET_POSITION_KI             0.0f
 #define YAW_ANGLE_RESET_POSITION_KD             0.0f
 fp32 YAW_ANGLE_RESET_POSITION[3] = { YAW_ANGLE_RESET_POSITION_KP, YAW_ANGLE_RESET_POSITION_KI, YAW_ANGLE_RESET_POSITION_KD };
-//  PITCHÖá½ÇËÙ¶È»·
+//  PITCHï¿½ï¿½ï¿½ï¿½Ù¶È»ï¿½
 #define PITCH_SPEED_RESET_POSITION_KP           80.0f
 #define PITCH_SPEED_RESET_POSITION_KI           0.0f
 #define PITCH_SPEED_RESET_POSITION_KD           0.0f
 fp32 PITCH_SPEED_RESET_POSITION[3] = { PITCH_SPEED_RESET_POSITION_KP, PITCH_SPEED_RESET_POSITION_KI, PITCH_SPEED_RESET_POSITION_KD };
-//  PITCHÖá½Ç¶È»·
+//  PITCHï¿½ï¿½Ç¶È»ï¿½
 #define PITCH_ANGLE_RESET_POSITION_KP           16.0f
 #define PITCH_ANGLE_RESET_POSITION_KI           0.5f
 #define PITCH_ANGLE_RESET_POSITION_KD           0.0f
 fp32 PITCH_ANGLE_RESET_POSITION[3] = { PITCH_ANGLE_RESET_POSITION_KP, PITCH_ANGLE_RESET_POSITION_KI, PITCH_ANGLE_RESET_POSITION_KD };
 
 
-//  ÊÖ¶¯¿ØÖÆÔÆÌ¨²ÎÊý
-//  YAWÖá½ÇËÙ¶È»·
+//  ï¿½Ö¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì¨ï¿½ï¿½ï¿½ï¿½
+//  YAWï¿½ï¿½ï¿½ï¿½Ù¶È»ï¿½
 #define YAW_SPEED_MANUAL_OPERATE_KP             360.0f//360.0f
 #define YAW_SPEED_MANUAL_OPERATE_KI             0.0f//0.1f,wyf:0.01
 #define YAW_SPEED_MANUAL_OPERATE_KD             0.0f
 fp32 YAW_SPEED_MANUAL_OPERATE[3] = { YAW_SPEED_MANUAL_OPERATE_KP, YAW_SPEED_MANUAL_OPERATE_KI, YAW_SPEED_MANUAL_OPERATE_KD };
-//  YAWÖá½Ç¶È»·
+//  YAWï¿½ï¿½Ç¶È»ï¿½
 #define YAW_ANGLE_MANUAL_OPERATE_KP             40.0f//39.1f
 #define YAW_ANGLE_MANUAL_OPERATE_KI             0.0001f//0.015f,wyf:0.02
 #define YAW_ANGLE_MANUAL_OPERATE_KD             40.0f//22.0f
 fp32 YAW_ANGLE_MANUAL_OPERATE[3] = { YAW_ANGLE_MANUAL_OPERATE_KP, YAW_ANGLE_MANUAL_OPERATE_KI, YAW_ANGLE_MANUAL_OPERATE_KD };
-//  PITCHÖá½ÇËÙ¶È»·
+//  PITCHï¿½ï¿½ï¿½ï¿½Ù¶È»ï¿½
 #define PITCH_SPEED_MANUAL_OPERATE_KP           160.0f//240.0f
 #define PITCH_SPEED_MANUAL_OPERATE_KI           0.05f
 #define PITCH_SPEED_MANUAL_OPERATE_KD           0.0f//58
 fp32 PITCH_SPEED_MANUAL_OPERATE[3] = { PITCH_SPEED_MANUAL_OPERATE_KP, PITCH_SPEED_MANUAL_OPERATE_KI, PITCH_SPEED_MANUAL_OPERATE_KD };
-//  PITCHÖá½Ç¶È»·
+//  PITCHï¿½ï¿½Ç¶È»ï¿½
 #define PITCH_ANGLE_MANUAL_OPERATE_KP           60.0f//40.0f
 #define PITCH_ANGLE_MANUAL_OPERATE_KI           0.1f//0.045f
 #define PITCH_ANGLE_MANUAL_OPERATE_KD           15.0f//20.0f
@@ -140,53 +140,53 @@ fp32 PITCH_ANGLE_MANUAL_OPERATE[3] = { PITCH_ANGLE_MANUAL_OPERATE_KP, PITCH_ANGL
 
 
 
-//  ×ÔÃé¿ØÖÆÔÆÌ¨²ÎÊý
-//  YAWÖá½ÇËÙ¶È»·
+//  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì¨ï¿½ï¿½ï¿½ï¿½
+//  YAWï¿½ï¿½ï¿½ï¿½Ù¶È»ï¿½
 #define YAW_SPEED_AIMBOT_OPERATE_KP             345.0f//360
 #define YAW_SPEED_AIMBOT_OPERATE_KI             0.00f//0.1f
 #define YAW_SPEED_AIMBOT_OPERATE_KD             0.0f
 fp32 YAW_SPEED_AIMBOT_OPERATE[3] = { YAW_SPEED_AIMBOT_OPERATE_KP, YAW_SPEED_AIMBOT_OPERATE_KI, YAW_SPEED_AIMBOT_OPERATE_KD };
-//  YAWÖá½Ç¶È»·
+//  YAWï¿½ï¿½Ç¶È»ï¿½
 #define YAW_ANGLE_AIMBOT_OPERATE_KP             13.7f//25.0f//36.0f
 #define YAW_ANGLE_AIMBOT_OPERATE_KI             0.00f//0.0f// 0.015f
 #define YAW_ANGLE_AIMBOT_OPERATE_KD             123.0f//2.0f//25.0f
 fp32 YAW_ANGLE_AIMBOT_OPERATE[3] = { YAW_ANGLE_AIMBOT_OPERATE_KP, YAW_ANGLE_AIMBOT_OPERATE_KI, YAW_ANGLE_AIMBOT_OPERATE_KD };
-//  PITCHÖá½ÇËÙ¶È»·
+//  PITCHï¿½ï¿½ï¿½ï¿½Ù¶È»ï¿½
 #define PITCH_SPEED_AIMBOT_OPERATE_KP           170.0f
 #define PITCH_SPEED_AIMBOT_OPERATE_KI           0.00f
 #define PITCH_SPEED_AIMBOT_OPERATE_KD           55.5f
 fp32 PITCH_SPEED_AIMBOT_OPERATE[3] = { PITCH_SPEED_AIMBOT_OPERATE_KP, PITCH_SPEED_AIMBOT_OPERATE_KI, PITCH_SPEED_AIMBOT_OPERATE_KD };
-//  PITCHÖá½Ç¶È»·
+//  PITCHï¿½ï¿½Ç¶È»ï¿½
 #define PITCH_ANGLE_AIMBOT_OPERATE_KP           20.0f
 #define PITCH_ANGLE_AIMBOT_OPERATE_KI           0.00f
 #define PITCH_ANGLE_AIMBOT_OPERATE_KD           70.5f
 fp32 PITCH_ANGLE_AIMBOT_OPERATE[3] = { PITCH_ANGLE_AIMBOT_OPERATE_KP, PITCH_ANGLE_AIMBOT_OPERATE_KI, PITCH_ANGLE_AIMBOT_OPERATE_KD };
 
 
-//  ´ò·ûÔÆÌ¨²ÎÊý
-//  YAWÖá½ÇËÙ¶È»·
+//  ï¿½ï¿½ï¿½ï¿½ï¿½Ì¨ï¿½ï¿½ï¿½ï¿½
+//  YAWï¿½ï¿½ï¿½ï¿½Ù¶È»ï¿½
 #define YAW_SPEED_AIMBOT_RUNES_KP               343.0f
 #define YAW_SPEED_AIMBOT_RUNES_KI               0.000f//0.1f
 #define YAW_SPEED_AIMBOT_RUNES_KD               15.0f
 fp32 YAW_SPEED_AIMBOT_RUNES[3] = { YAW_SPEED_AIMBOT_RUNES_KP, YAW_SPEED_AIMBOT_RUNES_KI, YAW_SPEED_AIMBOT_RUNES_KD };
-//  YAWÖá½Ç¶È»·
+//  YAWï¿½ï¿½Ç¶È»ï¿½
 #define YAW_ANGLE_AIMBOT_RUNES_KP               38.2f//24.0f//36.0f
 #define YAW_ANGLE_AIMBOT_RUNES_KI               0.0015f//0.0f// 0.015f
 #define YAW_ANGLE_AIMBOT_RUNES_KD               85.5f//2.0f//25.0f
 fp32 YAW_ANGLE_AIMBOT_RUNES[3] = { YAW_ANGLE_AIMBOT_RUNES_KP, YAW_ANGLE_AIMBOT_RUNES_KI, YAW_ANGLE_AIMBOT_RUNES_KD };
-//  PITCHÖá½ÇËÙ¶È»·
+//  PITCHï¿½ï¿½ï¿½ï¿½Ù¶È»ï¿½
 #define PITCH_SPEED_AIMBOT_RUNES_KP             238.0f
 #define PITCH_SPEED_AIMBOT_RUNES_KI             0.03f
 #define PITCH_SPEED_AIMBOT_RUNES_KD             0.0f
 fp32 PITCH_SPEED_AIMBOT_RUNES[3] = { PITCH_SPEED_AIMBOT_RUNES_KP, PITCH_SPEED_AIMBOT_RUNES_KI, PITCH_SPEED_AIMBOT_RUNES_KD };
-//  PITCHÖá½Ç¶È»·
+//  PITCHï¿½ï¿½Ç¶È»ï¿½
 #define PITCH_ANGLE_AIMBOT_RUNES_KP             41.8f
 #define PITCH_ANGLE_AIMBOT_RUNES_KI             0.01f
 #define PITCH_ANGLE_AIMBOT_RUNES_KD             15.6f
 fp32 PITCH_ANGLE_AIMBOT_RUNES[3] = { PITCH_ANGLE_AIMBOT_RUNES_KP, PITCH_ANGLE_AIMBOT_RUNES_KI, PITCH_ANGLE_AIMBOT_RUNES_KD };
 
 
-//  Ä¦²ÁÂÖ²ÎÊý
+//  Ä¦ï¿½ï¿½ï¿½Ö²ï¿½ï¿½ï¿½
 
 #define AMMO_LEFT_SPEED_30MS_KP                 5.8f
 #define AMMO_LEFT_SPEED_30MS_KI                 0.0f
