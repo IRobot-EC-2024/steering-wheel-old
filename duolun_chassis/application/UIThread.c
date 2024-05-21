@@ -323,7 +323,7 @@ void UI(void const *argument) {
       if (Chassis.Mode == NOFORCE) {
         Char_Draw(&noforce, "nof", UI_Graph_Change, 1, UI_Color_White, 16, 7, 2, 225, 786, "noforce");
         Char_ReFresh(noforce);
-      } else if (Chassis.Mode == ROTING) {
+      } else if (Chassis.Mode == ROTING_CW || Chassis.Mode == ROTING_CCW) {
         Char_Draw(&noforce, "nof", UI_Graph_Change, 1, UI_Color_Green, 16, 7, 2, 225, 786, "rotate ");
         Char_ReFresh(noforce);
       } else if (Chassis.Mode == FALLOW) {

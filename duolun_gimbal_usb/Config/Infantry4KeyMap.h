@@ -40,8 +40,8 @@
 // �������ݿ���
 #define SUPER_CAP_SWITCH_KEYMAP         CheakKeyPress(KEY_PRESSED_OFFSET_C)  
 // С����
-#define CHASSIS_ROTATE_SWITCH_KEYMAP    CheakKeyPress(KEY_PRESSED_OFFSET_SHIFT)  || (RemoteDial() == -1.0f) || CheakKeyPress(KEY_PRESSED_OFFSET_CTRL)
-
+#define CHASSIS_ROTATE_SWITCH_KEYMAP    CheakKeyPress(KEY_PRESSED_OFFSET_SHIFT)  || (RemoteDial() < -0.99f) || CheakKeyPress(KEY_PRESSED_OFFSET_CTRL)
+#define CHASSIS_ROTATE_CCW_KEYMAP       (RemoteDial() > 0.99f)
 
 //�򿪵��ո�
 #define COVER_SWITCH_KEYMAP             CheakKeyPressOnce(KEY_PRESSED_OFFSET_R)
@@ -57,7 +57,7 @@
 
     
 // ����ָ��
-#define SHOOT_COMMAND_KEYMAP            ((RemoteDial() == 1.0f) || (MousePressLeft()))
+#define SHOOT_COMMAND_KEYMAP            ((RemoteDial() > 0.99f) || (MousePressLeft()))
 // ����ָ��
 #define AIMBOT_COMMAND_KEYMAP           (SwitchLeftUpSide() || MousePressRight())
 // ���ģʽ���ֶ�/�Զ�������

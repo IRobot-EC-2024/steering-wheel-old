@@ -31,10 +31,10 @@ typedef struct{
 } GimbalPID_t;
 
 typedef enum{
-    GM_NO_FORCE         =   0x00,//ÎŞÁ¦
-    GM_INIT                     ,//³õÊ¼»¯
-    GM_TEST                     ,//Ä¦²ÁÂÖ²»×ª
-    GM_MATCH                    ,//Ä¦²ÁÂÖ×ª
+    GM_NO_FORCE         =   0x00,//ï¿½ï¿½ï¿½ï¿½
+    GM_INIT                     ,//ï¿½ï¿½Ê¼ï¿½ï¿½
+    GM_TEST                     ,//Ä¦ï¿½ï¿½ï¿½Ö²ï¿½×ª
+    GM_MATCH                    ,//Ä¦ï¿½ï¿½ï¿½ï¿½×ª
 } GimbalStateMachine_e;
 
 typedef enum{
@@ -75,24 +75,25 @@ typedef struct{
 } ImuBuffer_t;
 
 typedef struct{
-    EulerSystemMeasure_t    Imu;                    //  imuµÄÊı¾İ·´À¡
-    MotorMeasure_t          MotorMeasure;           //  µç»ú±àÂëÆ÷µÄÊı¾İ·´À¡
-    GimbalCommand_t         Command;                //  ÔÆÌ¨½Ç¶È¿ØÖÆÖ¸Áî
-    GimbalPID_t             Pid;                    //  ÔÆÌ¨PID½á¹¹Ìå
-    GimbalOutput_t          Output;                 //  ÔÆÌ¨µç»úÊä³ö
-    GimbalStateMachine_e    StateMachine;           //  ÔÆÌ¨×´Ì¬»ú
-    GimbalControlMode_e     ControlMode;            //  ÔÆÌ¨¿ØÖÆÄ£Ê½
-    GimbalFireMode_e        FireMode;               //  ÔÆÌ¨¿ª»ğÄ£Ê½
-    RefereeMeasure_t        Referee;                //  ²ÃÅĞÏµÍ³Êı¾İ
+    EulerSystemMeasure_t    Imu;                    //  imuï¿½ï¿½ï¿½ï¿½ï¿½İ·ï¿½ï¿½ï¿½
+    MotorMeasure_t          MotorMeasure;           //  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½İ·ï¿½ï¿½ï¿½
+    GimbalCommand_t         Command;                //  ï¿½ï¿½Ì¨ï¿½Ç¶È¿ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½
+    GimbalPID_t             Pid;                    //  ï¿½ï¿½Ì¨PIDï¿½á¹¹ï¿½ï¿½
+    GimbalOutput_t          Output;                 //  ï¿½ï¿½Ì¨ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    GimbalStateMachine_e    StateMachine;           //  ï¿½ï¿½Ì¨×´Ì¬ï¿½ï¿½
+    GimbalControlMode_e     ControlMode;            //  ï¿½ï¿½Ì¨ï¿½ï¿½ï¿½ï¿½Ä£Ê½
+    GimbalFireMode_e        FireMode;               //  ï¿½ï¿½Ì¨ï¿½ï¿½ï¿½ï¿½Ä£Ê½
+    RefereeMeasure_t        Referee;                //  ï¿½ï¿½ï¿½ï¿½ÏµÍ³ï¿½ï¿½ï¿½ï¿½
     ImuBuffer_t             ImuBuffer;
 } Gimbal_t;
 
 
 typedef enum{
-    CHASSIS_NO_FORCE    =   0x00,
+    CHASSIS_NO_FORCE    =   0x00,       // åº•ç›˜å’Œäº‘å°æ— åŠ›
     CHASSIS_NO_MOVE             ,
-    CHASSIS_FOLLOW              ,
-    CHASSIS_ROTATE              ,
+    CHASSIS_FOLLOW              ,       // è·Ÿéšåº•ç›˜
+    CHASSIS_ROTATE_CW           ,       // é¡ºæ—¶é’ˆæ—‹è½¬
+    CHASSIS_ROTATE_CCW          ,       // é€†æ—¶é’ˆæ—‹è½¬
 } ChassisState_e;
 
 typedef enum{
@@ -109,8 +110,8 @@ typedef struct{
 } Chassis_t;
 
 
-extern Gimbal_t                Gimbal;//ÔÆÌ¨×´Ì¬½á¹¹
-extern AimbotFrame_SCM_t       Aimbot;//×ÔÃéÊı¾İ
+extern Gimbal_t                Gimbal;//ï¿½ï¿½Ì¨×´Ì¬ï¿½á¹¹
+extern AimbotFrame_SCM_t       Aimbot;//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
 
 

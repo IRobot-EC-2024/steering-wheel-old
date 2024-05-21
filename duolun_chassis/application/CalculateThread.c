@@ -186,6 +186,8 @@ void ChassisInfUpdate() {
 }
 
 void ChassisModeUpdate() {
+  // bit7 bit6 bit5 bit4 bit3 bit2 bit1 bit0
+  // 高速  逆转 电容  顺转  随动  有力 无力  通信正常
   switch (PTZ.ChassisStatueRequest) {
     case 0x01: {
       Chassis.Mode = NOFORCE;
@@ -195,7 +197,14 @@ void ChassisModeUpdate() {
     case 0x32:
     case 0x52:
     case 0x72: {
-      Chassis.Mode = ROTING;
+      Chassis.Mode = ROTING_CW;
+      break;
+    }
+    case 0x62:
+    case 0xc2:
+    case 0xe2:
+    case 0x42: {
+      Chassis.Mode = ROTING_CCW;
       break;
     }
     case 0x0A:
@@ -231,7 +240,7 @@ void ChassisCommandUpdate() {
     Chassis.Current[7] = 0;
     return;
   }
-  if (Chassis.Mode == FALLOW || Chassis.Mode == ROTING || Chassis.Mode == STOP) {
+  if (Chassis.Mode == FALLOW || Chassis.Mode == ROTING_CW || Chassis.Mode == ROTING_CCW || Chassis.Mode == STOP) {
     follow_angle = loop_fp32_constrain(FollowAngle, YawMotorMeasure.angle - 180.0f, YawMotorMeasure.angle + 180.0f);
 
     if (Chassis.Mode == FALLOW) {
@@ -250,18 +259,21 @@ void ChassisCommandUpdate() {
       if (Fabs(Chassis.wz) < 0.5 * v_gain && Fabs(angle_minus) < 0.5) {
         Chassis.wz = 0.001 * Chassis.wz / Fabs(Chassis.wz);
       }
-    } else if (Chassis.Mode == ROTING) {
+    } else if (Chassis.Mode == ROTING_CW || Chassis.Mode == ROTING_CCW) {
       if (Power_Max <= 80) {
         Chassis.wz = sin(v_gain / 4.2) * 3.8f;  // shift慢转
       } else {
         Chassis.wz = sin(1.25f / 4.2) * 3.8f;  // 如果小陀螺功率过大，就限制到一个较小的转速
       }
-      if ((PTZ.ChassisStatueRequest & 64) == 64) {
+      if ((PTZ.ChassisStatueRequest & 0b10000000) == 0b10000000) {  // bit7, 高速模式
         if (Power_Max <= 80) {
           Chassis.wz = sin(v_gain / 4.2) * 4.5f;  // ctrl快转
         } else {
           Chassis.wz = sin(1.25f / 4.2) * 4.5f;  // 如果小陀螺功率过大，就限制到一个较小的转速
         }
+      }
+      if (Chassis.Mode == ROTING_CCW) {
+        Chassis.wz = -Chassis.wz;  // 反转
       }
       angle_minus = -YawMotorMeasure.angle + FollowAngle - YawMotorMeasure.speed_rpm * spin_angle_compensation;
       Chassis.vx = ((PTZ.FBSpeed / 32767.0f) * cos(angle_minus / 180.0 * PI) -

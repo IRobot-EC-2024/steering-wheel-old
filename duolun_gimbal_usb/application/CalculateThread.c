@@ -230,9 +230,11 @@ void ChassisStateMachineUpdate(void) {
       Chassis.ChassisState = CHASSIS_NO_FORCE;
   }
   if (Gimbal.StateMachine == GM_TEST || Gimbal.StateMachine == GM_MATCH) {
-    if (Remote.rc.s[1] == 2) {           // ��ದ�����������ǵ�������
-      if (CHASSIS_ROTATE_SWITCH_KEYMAP)  // С����ģʽ
-        Chassis.ChassisState = CHASSIS_ROTATE;
+    if (Remote.rc.s[1] == 2) {           // 左拨杆在上
+      if (CHASSIS_ROTATE_SWITCH_KEYMAP)  // 顺转
+        Chassis.ChassisState = CHASSIS_ROTATE_CW;
+      else if (CHASSIS_ROTATE_CCW_KEYMAP)  // 反转
+        Chassis.ChassisState = CHASSIS_ROTATE_CCW;
       else {
         if (CHASSIS_STOP_KEYMAP) chassis_no_follow_flag = (chassis_no_follow_flag + 1) % 2;
         if (chassis_no_follow_flag)
@@ -393,8 +395,6 @@ void RotorPIDUpdate(void) {
   if (FMthis == FMlast) {
     return;
   }
-
-  //
 
   if ((FMthis == GM_FIRE_READY) || (FMthis == GM_FIRE_COOLING)) {
     PID_init(&Gimbal.Pid.Rotor, PID_POSITION, ROTOR_STOP, M2006_MAX_OUTPUT, M2006_MAX_IOUTPUT);
@@ -600,34 +600,22 @@ void GetGimbalRequestState(GimbalRequestState_t *RequestState) {
 
   if (Chassis.ChassisState != CHASSIS_NO_FORCE) {
     RequestState->ChassisStateRequest |= (uint8_t)(1 << 1);
-    // �˶�״̬
     if (Chassis.ChassisState == CHASSIS_NO_MOVE) {
       RequestState->ChassisStateRequest |= (uint8_t)(1 << 2);
     } else if (Chassis.ChassisState == CHASSIS_FOLLOW) {
       RequestState->ChassisStateRequest |= (uint8_t)(1 << 3);
-    } else if (Chassis.ChassisState == CHASSIS_ROTATE) {
+    } else if (Chassis.ChassisState == CHASSIS_ROTATE_CW && Gimbal.StateMachine == GM_TEST) {
       RequestState->ChassisStateRequest |= (uint8_t)(1 << 4);
-    }
-
-    if (SUPER_CAP_SWITCH_KEYMAP || (Remote.rc.ch[4] > 655)) {
-      RequestState->ChassisStateRequest |= (uint8_t)(1 << 5);
-    }
-    if (CHASSIS_HIGH_SPEED_ROTATE) {
+    } else if (Chassis.ChassisState == CHASSIS_ROTATE_CCW && Gimbal.StateMachine == GM_TEST) {
       RequestState->ChassisStateRequest |= (uint8_t)(1 << 6);
     }
-    if (CHASSIS_HIGH_SPEED_KEYMAP) {
+
+    if ((SUPER_CAP_SWITCH_KEYMAP || (Remote.rc.ch[4] > 655)) && Gimbal.StateMachine == GM_MATCH) {
+      RequestState->ChassisStateRequest |= (uint8_t)(1 << 5);
+    }
+    if (CHASSIS_HIGH_SPEED_KEYMAP /*|| CHASSIS_HIGH_SPEED_ROTATE*/) {
       RequestState->ChassisStateRequest |= (uint8_t)(1 << 7);
     }
-
-    //        if (Chassis.ChassisSpeed = CHASSIS_NORMAL_SPEED) {
-    //            RequestState->ChassisStateRequest |= (uint8_t)(1 << 5);
-    //        }
-    //        else if (Chassis.ChassisSpeed == CHASSIS_FAST_SPEED) {
-    //            RequestState->ChassisStateRequest |= (uint8_t)(1 << 6);
-    //        }
-    //        else if (Chassis.ChassisSpeed == CHASSIS_LOW_SPEED) {
-    //            RequestState->ChassisStateRequest |= (uint8_t)(1 << 7);
-    //        }
   } else {
     RequestState->ChassisStateRequest |= (uint8_t)(1 << 0);
   }

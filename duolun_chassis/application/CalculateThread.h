@@ -3,7 +3,14 @@
 #include "struct_typedef.h"
 #include "feet_motor.h"
 
-typedef enum { NOFORCE, STOP, FALLOW, ROTING, HIGHSPEED } ChassisMode_e;
+typedef enum {
+  NOFORCE,     // 底盘无力
+  STOP,        // 底盘停止
+  FALLOW,      // 底盘跟随云台
+  ROTING_CW,   // 顺时针小陀螺
+  ROTING_CCW,  // 逆时针小陀螺
+  HIGHSPEED    // 高速模式
+} ChassisMode_e;
 
 typedef struct {
   motor_measure_t Motor6020[4];
