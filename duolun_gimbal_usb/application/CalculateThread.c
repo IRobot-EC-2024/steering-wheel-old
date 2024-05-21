@@ -19,6 +19,7 @@
 #include "kalman filter.h"
 #include "usb.h"
 #include "UsbPackage.h"
+#include <stdbool.h>
 #include PARAMETER_FILE
 #include KEYMAP_FILE
 
@@ -53,6 +54,7 @@ void AmmoCommandUpdate(void);
 void DebugLEDShow(void);
 void GimbalRequestStatePacketSend(void);
 void ShootSpeedAdopt(void);
+void ManualShootSpeedAdopt(void);
 uint16_t Power_Max = 45;
 fp32 v_gain;
 
@@ -112,9 +114,10 @@ void CalculateThread(void const *pvParameters) {
     GimbalCommandUpdate();        // ָ���ת��
     ChassisCommandUpdate();       // ����ָ��ת��
     RotorCommandUpdate();         // ���̿���ת��
-    if (ammo_speed_ad_flag == 1) {
-      ShootSpeedAdopt();
-    }  // Ħ�����ٶȵ���
+                                  // if (ammo_speed_ad_flag == 1) {
+    // ShootSpeedAdopt();     // 自动弹速闭环
+    ManualShootSpeedAdopt();  // 手动调整弹速，x键增加，v键减小
+    // }  // Ħ�����ٶȵ���
     AmmoCommandUpdate();  // ���䲿�ֿ���ת��
     if (control_counter > 10) {
       control_counter = 0;
@@ -276,7 +279,7 @@ void GimbalFireModeUpdate(void) {
   // �Զ����𿪹�,key Q
   if (FIRE_MODE_KEYMAP) auto_fire_flag = (auto_fire_flag + 1) % 2;
 
-  // ��������,key B 
+  // ��������,key B
   if (big_rune_flag || small_rune_flag)
     single_shoot_flag = 1;
   else {
@@ -339,7 +342,6 @@ void GimbalFireModeUpdate(void) {
     gimbal_fire_countdown--;
   }
 }
-
 
 GimbalControlMode_e CMthis = GM_NO_CONTROL;
 GimbalControlMode_e CMlast = GM_NO_CONTROL;
@@ -607,7 +609,7 @@ void GetGimbalRequestState(GimbalRequestState_t *RequestState) {
       RequestState->ChassisStateRequest |= (uint8_t)(1 << 4);
     }
 
-    if (SUPER_CAP_SWITCH_KEYMAP) {
+    if (SUPER_CAP_SWITCH_KEYMAP || (Remote.rc.ch[4] > 655)) {
       RequestState->ChassisStateRequest |= (uint8_t)(1 << 5);
     }
     if (CHASSIS_HIGH_SPEED_ROTATE) {
@@ -690,11 +692,11 @@ char low_speed_time_num = 0;
 void ShootSpeedAdopt(void) {
   shoot_speed_now = Referee.Ammo0Speed;
   if (shoot_speed_last != shoot_speed_now) {
-    // ������ٵ���26.5m/s
+    // 当子弹速度在26.5m/s到30m/s之间
     if (shoot_speed_now < (shoot_limit - 3.5f) && shoot_speed_now >= (shoot_limit - 7.0f)) {
       low_speed_time_num++;
     }
-    /*�����ж�*/ /*�����ж�*/
+    // 速度判断
     if (((shoot_limit - 2.5f) <= shoot_speed_now) || low_speed_time_num == 3) {
       if ((shoot_limit - 2.5) < shoot_speed_now) {
         speed_high_flg = (shoot_limit - 2.5 - shoot_speed_now) * 120;
@@ -703,7 +705,7 @@ void ShootSpeedAdopt(void) {
       }
       low_speed_time_num = 0;
     }
-    /*�жϵ����Ƿ���26.5��27.5֮��*/
+    // 判断速度是否在26.5到27.5之间，是的话就递增高速或低速计数器，并且把相反的计数器清零
     if (shoot_speed_now >= (shoot_limit - 2.5f)) {
       speed_dec_flag++;
       speed_add_flag = 0;
@@ -712,7 +714,7 @@ void ShootSpeedAdopt(void) {
       speed_dec_flag = 0;
       speed_add_flag++;
     }
-    // ���β���������������
+    // 如果速度减小标志或速度增大标志达到3
     if (speed_dec_flag == 3) {
       shoot_adot++;
       speed_dec_flag = 0;
@@ -722,6 +724,10 @@ void ShootSpeedAdopt(void) {
       shoot_adot--;
       speed_dec_flag = 0;
       speed_add_flag = 0;
+    }
+    // 如果子弹速度大于27.5，就停止加速
+    if (shoot_speed_now > 27.5f) {
+      shoot_adot = 0;
     }
   }
   if (shoot_speed_now > 30) {
@@ -749,4 +755,14 @@ void ShootSpeedAdopt(void) {
     ammo_speed_r = 7000;
   else if (ammo_speed_r > 7800)
     ammo_speed_l = 7800;
+}
+
+void ManualShootSpeedAdopt(void) {
+  if (SHOOT_SPEED_INCREASE_KEYMAP) {
+    ammo_speed_l += 20;
+    ammo_speed_r += 20;
+  } else if (SHOOT_SPEED_DECREASE_KEYMAP) {
+    ammo_speed_l -= 20;
+    ammo_speed_r -= 20;
+  }
 }
